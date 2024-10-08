@@ -18,7 +18,7 @@ router.get(
   authenticateToken,
   AdminController.getAdminByUsername,
 );
-router.post(PREFIX, AdminController.createAdmin);
+router.post(PREFIX, authenticateToken, AdminController.createAdmin);
 router.put(`${PREFIX}/:id`, authenticateToken, AdminController.updateAdmin);
 router.put(
   `${PREFIX}/password/:id`,
