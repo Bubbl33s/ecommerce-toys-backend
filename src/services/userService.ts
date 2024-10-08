@@ -1,7 +1,7 @@
 import prisma from "./prisma";
 import {
   hashPassword,
-  validateUserName,
+  validateFullName,
   validateEmail,
   validatePassword,
 } from "../utilities";
@@ -48,7 +48,7 @@ export class UserService {
       throw new Error("Ya existe un usuario con ese correo electrónico");
     }
 
-    validateUserName(data.fullName);
+    validateFullName(data.fullName);
     validateEmail(data.email);
     validatePassword(data.password);
 
@@ -64,7 +64,7 @@ export class UserService {
   }
 
   static async updateUser(id: string, data: UpdateUserData) {
-    validateUserName(data.fullName);
+    validateFullName(data.fullName);
     validateEmail(data.email);
 
     return prisma.user.update({

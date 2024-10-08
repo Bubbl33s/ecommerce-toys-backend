@@ -1,14 +1,16 @@
 import { hashPassword, comparePassword } from "./passwordHash";
 import {
-  validateUserName,
+  validateUsername,
   validateEmail,
   validatePassword,
+  validateFullName,
 } from "./userDataValidation";
 
 export {
   hashPassword,
   comparePassword,
-  validateUserName,
+  validateFullName,
   validateEmail,
   validatePassword,
+  validateUsername,
 };
