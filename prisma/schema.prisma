@@ -13,18 +13,132 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id           String   @id @default(cuid()) @unique
+  fullName     String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(50)
+  passwordHash String
+  cart         Cart?
+  orders       Order[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  isDeleted    Boolean  @default(false)
+}
+
+model Cart {
+  id        String   @id @default(cuid()) @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  items     CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(cuid()) @unique
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  cartId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+}
+
 model Product {
-  id          String   @id @default(cuid())
-  name        String
+  id          String   @id @default(cuid()) @unique
+  name        String @db.VarChar(50)
   description String?
   price       Float
-  image       String?
-  brand       String @default("Generic")
-  material    String @default("Plastic")
-  category    String @default("Misc")
-  has_discount Boolean @default(false)
-  discountDesc String?
-  discountCat String?
+  stock       Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  images      Image[]
+  brand       Brand @relation(fields: [brandId], references: [id])
+  brandId     String
+  material    Material? @relation(fields: [materialId], references: [id])
+  materialId  String?
+  discount    Discount? @relation(fields: [discountId], references: [id])
+  discountId  String?
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+}
+
+model Category {
+  id          String   @id @default(cuid()) @unique
+  name        String   @db.VarChar(50)
+  description String?
+  products    Product[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+}
+
+model Image {
+  id        String   @id @default(cuid()) @unique
+  url       String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+}
+
+model Brand {
+  id          String   @id @default(cuid()) @unique
+  name        String   @db.VarChar(100)
+  description String?
+  products    Product[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+}
+
+model Material {
+  id          String   @id @default(cuid()) @unique
+  name        String   @db.VarChar(50)
+  description String?
+  products    Product[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+}
+
+model Discount {
+  id          String   @id @default(cuid()) @unique
+  description String   @db.VarChar(100)
+  discount    Float
+  products    Product[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+}
+
+model Order {
+  id            String     @id @default(uuid()) @unique
+  user          User       @relation(fields: [userId], references: [id])
+  userId        String
+  totalAmount   Decimal    @default(0.00)
+  orderDate     DateTime   @default(now())
+  status        String     @default("Pending")
+  items         OrderItem[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  isDeleted     Boolean     @default(false)
+}
+
+model OrderItem {
+  id        String   @id @default(cuid()) @unique
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+}
+
+model Admin {
+  id           String   @id @default(cuid()) @unique
+  fullName     String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(50)
+  username     String   @unique @db.VarChar(25)
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  isDeleted    Boolean  @default(false)
 }
