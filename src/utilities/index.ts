@@ -1,4 +1,14 @@
 import { hashPassword, comparePassword } from "./passwordHash";
-import { validateUserData } from "./userDataValidation";
+import {
+  validateUserName,
+  validateEmail,
+  validatePassword,
+} from "./userDataValidation";
 
-export { hashPassword, comparePassword, validateUserData };
+export {
+  hashPassword,
+  comparePassword,
+  validateUserName,
+  validateEmail,
+  validatePassword,
+};

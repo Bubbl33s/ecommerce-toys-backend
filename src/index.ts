@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import productRoutes from "./routes/productRoutes";
+import userRoutes from "./routes/userRoutes";
 
 import cors from "cors";
 
@@ -13,8 +14,10 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
 
 app.use("/api", productRoutes);
+app.use("/api", userRoutes);
 
 app.get("/", (_: Request, res: Response) => {
   res.send("Hello, world!");
