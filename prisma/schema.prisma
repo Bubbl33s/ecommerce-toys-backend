@@ -65,7 +65,7 @@ model Product {
 
 model Category {
   id          String   @id @default(cuid()) @unique
-  name        String   @db.VarChar(50)
+  name        String   @db.VarChar(50) @unique
   description String?
   products    Product[]
   createdAt   DateTime @default(now())
@@ -82,7 +82,7 @@ model Image {
 
 model Brand {
   id          String   @id @default(cuid()) @unique
-  name        String   @db.VarChar(100)
+  name        String   @db.VarChar(100) @unique
   description String?
   products    Product[]
   createdAt   DateTime @default(now())
@@ -92,7 +92,7 @@ model Brand {
 
 model Material {
   id          String   @id @default(cuid()) @unique
-  name        String   @db.VarChar(50)
+  name        String   @db.VarChar(50) @unique
   description String?
   products    Product[]
   createdAt   DateTime @default(now())
