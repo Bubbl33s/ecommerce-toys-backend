@@ -1,11 +1,4 @@
-type UserDataForValidation = {
-  fullName: string;
-  email: string;
-  password: string;
-  emailExistsCallback: (email: string) => Promise<any>;
-};
-
-export const validateUserName = (name: string) => {
+export const validateFullName = (name: string) => {
   if (name.length < 3) {
     throw new Error("El nombre completo debe tener al menos 3 caracteres");
   }
@@ -30,5 +23,11 @@ export const validatePassword = (password: string) => {
     throw new Error(
       "La contraseña debe contener al menos una letra mayúscula, un número y un carácter especial.",
     );
+  }
+};
+
+export const validateUsername = (username: string) => {
+  if (username.length < 8) {
+    throw new Error("El nombre de usuario debe tener al menos 8 caracteres");
   }
 };

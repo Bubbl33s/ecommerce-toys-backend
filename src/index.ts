@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import productRoutes from "./routes/productRoutes";
 import userRoutes from "./routes/userRoutes";
-import authRoutes from "./routes/authRoutes";
+import adminRoutes from "./routes/adminRoutes";
 
 import cors from "cors";
 
@@ -19,8 +19,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(API_PREFIX, productRoutes);
-app.use(API_PREFIX, authRoutes);
 app.use(API_PREFIX, userRoutes);
+app.use(API_PREFIX, adminRoutes);
 
 app.get("/", (_: Request, res: Response) => {
   res.send("Hello, world!");
