@@ -13,6 +13,7 @@ export class BrandService {
   static async getBrandById(id: string) {
     return prisma.brand.findUnique({
       where: { id },
+      include: { products: true },
     });
   }
 

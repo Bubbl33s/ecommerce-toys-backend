@@ -13,6 +13,7 @@ export class CategoryService {
   static async getCategoryById(id: string) {
     return prisma.category.findUnique({
       where: { id },
+      include: { products: true },
     });
   }
 
