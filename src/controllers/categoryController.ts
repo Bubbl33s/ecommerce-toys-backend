@@ -3,20 +3,56 @@ import { CategoryService } from "../services/categoryService";
 
 export class CategoryController {
   static async getCategories(_: Request, res: Response) {
-    const categories = await CategoryService.getCategories();
-    res.json(categories);
+    try {
+      const categories = await CategoryService.getCategories();
+      res.json(categories);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   static async getCategoryById(req: Request, res: Response) {
     const { id } = req.params;
-    const category = await CategoryService.getCategoryById(id);
-    res.json(category);
+
+    try {
+      const category = await CategoryService.getCategoryById(id);
+
+      if (!category) {
+        res.status(404).json({ error: "Categoría no encontrada" });
+        return;
+      }
+      res.json(category);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   static async getCategoryByName(req: Request, res: Response) {
     const { name } = req.params;
-    const category = await CategoryService.getCategoryByName(name);
-    res.json(category);
+
+    try {
+      const category = await CategoryService.getCategoryByName(name);
+
+      if (!category) {
+        res.status(404).json({ error: "Categoría no encontrada" });
+        return;
+      }
+      res.json(category);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   static async createCategory(req: Request, res: Response) {
@@ -31,6 +67,7 @@ export class CategoryController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -49,6 +86,7 @@ export class CategoryController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -63,6 +101,7 @@ export class CategoryController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -77,6 +116,7 @@ export class CategoryController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -84,8 +124,16 @@ export class CategoryController {
 
   static async deleteCategory(req: Request, res: Response) {
     const { id } = req.params;
-    const category = await CategoryService.deleteCategory(id);
 
-    res.json(category);
+    try {
+      const category = await CategoryService.deleteCategory(id);
+      res.json(category);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 }
