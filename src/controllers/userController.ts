@@ -40,6 +40,11 @@ export class UserController {
 
     try {
       const user = await UserService.getUserByEmail(email);
+
+      if (!user) {
+        res.status(404).json({ error: "Usuario no encontrado" });
+        return;
+      }
       res.json(user);
     } catch (error) {
       if (error instanceof Error) {
