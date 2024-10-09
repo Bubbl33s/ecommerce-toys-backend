@@ -27,12 +27,12 @@ export class UserController {
 
     try {
       const user = await UserService.createUser(data);
-      return res.json(user);
+      res.json(user);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
@@ -42,12 +42,12 @@ export class UserController {
 
     try {
       const user = await UserService.updateUser(id, data);
-      return res.json(user);
+      res.json(user);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
@@ -57,12 +57,12 @@ export class UserController {
 
     try {
       const user = await UserService.updatePassword(id, password);
-      return res.json(user);
+      res.json(user);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
@@ -71,12 +71,12 @@ export class UserController {
 
     try {
       const user = await UserService.activateUser(id);
-      return res.json(user);
+      res.json(user);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
@@ -85,12 +85,12 @@ export class UserController {
 
     try {
       const user = await UserService.deactivateUser(id);
-      return res.json(user);
+      res.json(user);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 

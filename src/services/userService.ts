@@ -6,16 +6,16 @@ import {
   validatePassword,
 } from "../utilities";
 
-interface CreateUserData {
+type CreateUserData = {
   fullName: string;
   email: string;
   password: string;
-}
+};
 
-interface UpdateUserData {
+type UpdateUserData = {
   fullName: string;
   email: string;
-}
+};
 
 export class UserService {
   static async getUsers() {
@@ -41,35 +41,35 @@ export class UserService {
     });
   }
 
-  static async createUser(data: CreateUserData) {
-    const userExists = await this.getUserByEmail(data.email);
+  static async createUser({ fullName, email, password }: CreateUserData) {
+    const userExists = await this.getUserByEmail(email);
 
     if (userExists) {
       throw new Error("Ya existe un usuario con ese correo electrónico");
     }
 
-    validateFullName(data.fullName);
-    validateEmail(data.email);
-    validatePassword(data.password);
+    validateFullName(fullName);
+    validateEmail(email);
+    validatePassword(password);
 
-    const hashedPassword = await hashPassword(data.password);
+    const hashedPassword = await hashPassword(password);
 
     return prisma.user.create({
       data: {
-        fullName: data.fullName,
-        email: data.email,
+        fullName,
+        email,
         passwordHash: hashedPassword,
       },
     });
   }
 
-  static async updateUser(id: string, data: UpdateUserData) {
-    validateFullName(data.fullName);
-    validateEmail(data.email);
+  static async updateUser(id: string, { fullName, email }: UpdateUserData) {
+    validateFullName(fullName);
+    validateEmail(email);
 
     return prisma.user.update({
       where: { id },
-      data,
+      data: { fullName, email },
     });
   }
 
