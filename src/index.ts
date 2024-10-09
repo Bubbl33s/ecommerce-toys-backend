@@ -3,6 +3,7 @@ import productRoutes from "./routes/productRoutes";
 import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
+import brandRoutes from "./routes/brandRoutes";
 
 import cors from "cors";
 
@@ -23,6 +24,7 @@ app.use(API_PREFIX, productRoutes);
 app.use(API_PREFIX, userRoutes);
 app.use(API_PREFIX, adminRoutes);
 app.use(API_PREFIX, categoryRoutes);
+app.use(API_PREFIX, brandRoutes);
 
 app.get("/", (_: Request, res: Response) => {
   res.send("Hello, world!");
