@@ -34,12 +34,12 @@ export class AdminController {
 
     try {
       const admin = await AdminService.createAdmin(data);
-      return res.json(admin);
+      res.json(admin);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
@@ -49,12 +49,12 @@ export class AdminController {
 
     try {
       const admin = await AdminService.updateAdmin(id, data);
-      return res.json(admin);
+      res.json(admin);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
@@ -64,12 +64,12 @@ export class AdminController {
 
     try {
       const admin = await AdminService.updatePassword(id, password);
-      return res.json(admin);
+      res.json(admin);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
@@ -78,12 +78,12 @@ export class AdminController {
 
     try {
       const admin = await AdminService.activateAdmin(id);
-      return res.json(admin);
+      res.json(admin);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
@@ -92,12 +92,12 @@ export class AdminController {
 
     try {
       const admin = await AdminService.deactivateAdmin(id);
-      return res.json(admin);
+      res.json(admin);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
@@ -106,12 +106,12 @@ export class AdminController {
 
     try {
       await AdminService.deleteAdmin(id);
-      return res.json({ message: "Admin eliminado correctamente" });
+      res.json({ message: "Admin eliminado correctamente" });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
-      return res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 }
