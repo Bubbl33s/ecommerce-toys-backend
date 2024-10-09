@@ -3,23 +3,51 @@ import { UserService } from "../services/userService";
 
 export class UserController {
   static async getUsers(_: Request, res: Response) {
-    const users = await UserService.getUsers();
-
-    res.json(users);
+    try {
+      const users = await UserService.getUsers();
+      res.json(users);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   static async getUserById(req: Request, res: Response) {
     const { id } = req.params;
-    const user = await UserService.getUserById(id);
 
-    res.json(user);
+    try {
+      const user = await UserService.getUserById(id);
+
+      if (!user) {
+        res.status(404).json({ error: "Usuario no encontrado" });
+        return;
+      }
+      res.json(user);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   static async getUserByEmail(req: Request, res: Response) {
     const { email } = req.params;
-    const user = await UserService.getUserByEmail(email);
 
-    res.json(user);
+    try {
+      const user = await UserService.getUserByEmail(email);
+      res.json(user);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   static async createUser(req: Request, res: Response) {
@@ -31,6 +59,7 @@ export class UserController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -46,6 +75,7 @@ export class UserController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -61,6 +91,7 @@ export class UserController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -75,6 +106,7 @@ export class UserController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -89,6 +121,7 @@ export class UserController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -96,8 +129,16 @@ export class UserController {
 
   static async deleteUser(req: Request, res: Response) {
     const { id } = req.params;
-    const user = await UserService.deleteUser(id);
 
-    res.json(user);
+    try {
+      const user = await UserService.deleteUser(id);
+      res.json(user);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 }
