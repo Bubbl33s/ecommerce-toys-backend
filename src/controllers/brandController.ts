@@ -3,20 +3,61 @@ import { BrandService } from "../services/brandService";
 
 export class BrandController {
   static async getBrands(_: Request, res: Response) {
-    const brands = await BrandService.getBrands();
-    res.json(brands);
+    try {
+      const brands = await BrandService.getBrands();
+
+      if (!brands) {
+        res.status(404).json({ error: "No hay marcas" });
+        return;
+      }
+      res.json(brands);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   static async getBrandById(req: Request, res: Response) {
     const { id } = req.params;
-    const brand = await BrandService.getBrandById(id);
-    res.json(brand);
+
+    try {
+      const brand = await BrandService.getBrandById(id);
+
+      if (!brand) {
+        res.status(404).json({ error: "Marca no encontrada" });
+        return;
+      }
+      res.json(brand);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   static async getBrandByName(req: Request, res: Response) {
     const { name } = req.params;
-    const brand = await BrandService.getBrandByName(name);
-    res.json(brand);
+
+    try {
+      const brand = await BrandService.getBrandByName(name);
+
+      if (!brand) {
+        res.status(404).json({ error: "Marca no encontrada" });
+        return;
+      }
+      res.json(brand);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   static async createBrand(req: Request, res: Response) {
@@ -31,6 +72,7 @@ export class BrandController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -49,6 +91,7 @@ export class BrandController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -63,6 +106,7 @@ export class BrandController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -77,6 +121,7 @@ export class BrandController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
@@ -91,6 +136,7 @@ export class BrandController {
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
+        return;
       }
       res.status(500).json({ error: "Error interno del servidor" });
     }
