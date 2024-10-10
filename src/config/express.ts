@@ -1,6 +1,8 @@
 import express, { Application } from "express";
-
 import cors from "cors";
+import helmet from "helmet";
+import compression from "compression";
+import morgan from "morgan";
 
 export default function setupExpress(app: Application) {
   const corsOptions = {
@@ -11,4 +13,8 @@ export default function setupExpress(app: Application) {
 
   app.use(cors(corsOptions));
   app.use(express.json());
+
+  app.use(helmet());
+  app.use(compression());
+  app.use(morgan("dev"));
 }
