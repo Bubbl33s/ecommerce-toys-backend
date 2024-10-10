@@ -7,7 +7,9 @@ export interface MaterialData {
 
 export class MaterialService {
   static async getMaterials() {
-    return prisma.material.findMany();
+    return prisma.material.findMany({
+      include: { products: true },
+    });
   }
 
   static async getMaterialById(id: string) {
@@ -20,6 +22,7 @@ export class MaterialService {
   static async getMaterialByName(name: string) {
     return prisma.material.findUnique({
       where: { name },
+      include: { products: true },
     });
   }
 

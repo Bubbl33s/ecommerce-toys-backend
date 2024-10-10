@@ -7,12 +7,15 @@ export interface DiscountData {
 
 export class DiscountService {
   static async getDiscounts() {
-    return prisma.discount.findMany();
+    return prisma.discount.findMany({
+      include: { products: true },
+    });
   }
 
   static async getDiscountById(id: string) {
     return prisma.discount.findUnique({
       where: { id },
+      include: { products: true },
     });
   }
 
