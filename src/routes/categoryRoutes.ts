@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { CategoryController } from "../controllers/categoryController";
 import { authenticateToken } from "../middlewares/authMiddleware";
+import { entityNameValidator } from "../validators";
+import validate from "../middlewares/validate";
 
 const router = Router();
 const PREFIX = "/categories";
@@ -16,19 +18,27 @@ router.get(
   authenticateToken,
   CategoryController.getCategoryByName,
 );
-router.post(PREFIX, authenticateToken, CategoryController.createCategory);
+router.post(
+  PREFIX,
+  authenticateToken,
+  entityNameValidator,
+  validate,
+  CategoryController.createCategory,
+);
 router.put(
   `${PREFIX}/:id`,
   authenticateToken,
+  entityNameValidator,
+  validate,
   CategoryController.updateCategory,
 );
-router.put(
-  `${PREFIX}/activate/:id`,
+router.patch(
+  `${PREFIX}/:id/activate`,
   authenticateToken,
   CategoryController.activateCategory,
 );
-router.put(
-  `${PREFIX}/deactivate/:id`,
+router.patch(
+  `${PREFIX}/:id/deactivate`,
   authenticateToken,
   CategoryController.deactivateCategory,
 );
