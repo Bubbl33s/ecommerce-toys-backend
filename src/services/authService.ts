@@ -19,7 +19,7 @@ export class AuthService {
       throw new Error("Contraseña inválida");
     }
 
-    const token = jwt.sign({ email: user.email }, secretKey, {
+    const token = jwt.sign({ id: user.id, role: "user" }, secretKey, {
       expiresIn: "2h",
     });
 
@@ -27,23 +27,23 @@ export class AuthService {
   }
 
   static async adminLogin(username: string, password: string) {
-    const user = await AdminService.getAdminByUsername(username);
+    const admin = await AdminService.getAdminByUsername(username);
 
-    if (!user) {
+    if (!admin) {
       throw new Error("Nombre de usuario no encontrado");
     }
 
-    const isPasswordMatch = await comparePassword(password, user.passwordHash);
+    const isPasswordMatch = await comparePassword(password, admin.passwordHash);
 
     if (!isPasswordMatch) {
       throw new Error("Contraseña inválida");
     }
 
-    const token = jwt.sign({ email: user.email }, secretKey, {
+    const token = jwt.sign({ id: admin.id, role: "admin" }, secretKey, {
       expiresIn: "2h",
     });
 
-    return { user, token };
+    return { admin, token };
   }
 
   // Verificar el token
