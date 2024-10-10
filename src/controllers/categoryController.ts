@@ -5,6 +5,12 @@ export class CategoryController {
   static async getCategories(_: Request, res: Response, next: NextFunction) {
     try {
       const categories = await CategoryService.getCategories();
+
+      if (!categories) {
+        res.status(404).json({ error: "No hay categorías" });
+        return;
+      }
+
       res.json(categories);
     } catch (error) {
       next(error);

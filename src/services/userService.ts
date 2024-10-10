@@ -64,6 +64,12 @@ export class UserService {
   }
 
   static async updateUser(id: string, { fullName, email }: UpdateUserData) {
+    const userExists = await this.getUserById(id);
+
+    if (!userExists) {
+      throw new Error("No existe un usuario con ese ID");
+    }
+
     validateFullName(fullName);
     validateEmail(email);
 
@@ -74,6 +80,12 @@ export class UserService {
   }
 
   static async updatePassword(id: string, password: string) {
+    const userExists = await this.getUserById(id);
+
+    if (!userExists) {
+      throw new Error("No existe un usuario con ese ID");
+    }
+
     validatePassword(password);
 
     const hashedPassword = await hashPassword(password);
@@ -87,6 +99,12 @@ export class UserService {
   }
 
   static async activateUser(id: string) {
+    const userExists = await this.getUserById(id);
+
+    if (!userExists) {
+      throw new Error("No existe un usuario con ese ID");
+    }
+
     return prisma.user.update({
       where: { id },
       data: {
@@ -96,6 +114,12 @@ export class UserService {
   }
 
   static async deactivateUser(id: string) {
+    const userExists = await this.getUserById(id);
+
+    if (!userExists) {
+      throw new Error("No existe un usuario con ese ID");
+    }
+
     return prisma.user.update({
       where: { id },
       data: {
@@ -105,6 +129,12 @@ export class UserService {
   }
 
   static async deleteUser(id: string) {
+    const userExists = await this.getUserById(id);
+
+    if (!userExists) {
+      throw new Error("No existe un usuario con ese ID");
+    }
+
     return prisma.user.delete({
       where: { id },
     });
