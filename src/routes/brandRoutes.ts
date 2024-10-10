@@ -3,20 +3,33 @@ import { BrandController } from "../controllers/brandController";
 import { authenticateToken } from "../middlewares/authMiddleware";
 import { entityNameValidator } from "../validators";
 import validate from "../middlewares/validate";
+import { authorizeRoles } from "../middlewares/rolesMiddleware";
 
 const router = Router();
 const PREFIX = "/brands";
 
-router.get(PREFIX, authenticateToken, BrandController.getBrands);
-router.get(`${PREFIX}/:id`, authenticateToken, BrandController.getBrandById);
+router.get(
+  PREFIX,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  BrandController.getBrands,
+);
+router.get(
+  `${PREFIX}/:id`,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  BrandController.getBrandById,
+);
 router.get(
   `${PREFIX}/name/:name`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   BrandController.getBrandByName,
 );
 router.post(
   PREFIX,
   authenticateToken,
+  authorizeRoles(["admin"]),
   entityNameValidator,
   validate,
   BrandController.createBrand,
@@ -24,6 +37,7 @@ router.post(
 router.put(
   `${PREFIX}/:id`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   entityNameValidator,
   validate,
   BrandController.updateBrand,
@@ -31,13 +45,20 @@ router.put(
 router.patch(
   `${PREFIX}/:id/activate`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   BrandController.activateBrand,
 );
 router.patch(
   `${PREFIX}/:id/deactivate`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   BrandController.deactivateBrand,
 );
-router.delete(`${PREFIX}/:id`, authenticateToken, BrandController.deleteBrand);
+router.delete(
+  `${PREFIX}/:id`,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  BrandController.deleteBrand,
+);
 
 export default router;
