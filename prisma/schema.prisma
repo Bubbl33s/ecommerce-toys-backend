@@ -18,6 +18,7 @@ model User {
   fullName     String   @db.VarChar(100)
   email        String   @unique @db.VarChar(50)
   passwordHash String
+  profileImage  String?
   cart         Cart?
   orders       Order[]
   createdAt    DateTime @default(now())
@@ -138,6 +139,7 @@ model Admin {
   email        String   @unique @db.VarChar(50)
   username     String   @unique @db.VarChar(25)
   passwordHash String
+  profileImage  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   isDeleted    Boolean  @default(false)
