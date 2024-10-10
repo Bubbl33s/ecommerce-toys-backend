@@ -12,11 +12,17 @@ import {
   updateAdminValidator,
 } from "../validators/adminValidations";
 import validate from "../middlewares/validate";
+import { authorizeRoles } from "../middlewares/rolesMiddleware";
 
 const router = Router();
 const PREFIX = "/admins";
 
-router.get(PREFIX, authenticateToken, AdminController.getAdmins);
+router.get(
+  PREFIX,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  AdminController.getAdmins,
+);
 router.get(`${PREFIX}/:id`, authenticateToken, AdminController.getAdminById);
 router.get(
   `${PREFIX}/email/:email`,

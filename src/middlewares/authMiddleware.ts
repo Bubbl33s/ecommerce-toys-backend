@@ -10,9 +10,8 @@ export const authenticateToken = (
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ error: "Acceso denegado, token no proporcionado" });
+    res.status(401).json({ error: "Acceso denegado, token no proporcionado" });
+    return;
   }
 
   try {
@@ -22,6 +21,6 @@ export const authenticateToken = (
 
     next();
   } catch (err) {
-    return res.status(403).json({ error: "Token inválido o expirado" });
+    res.status(403).json({ error: "Token inválido o expirado" });
   }
 };

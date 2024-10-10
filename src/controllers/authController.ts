@@ -17,15 +17,20 @@ export class AuthController {
     const { username, password } = req.body;
 
     try {
-      const { user, token } = await AuthService.adminLogin(username, password);
-      res.json({ user, token });
+      const { admin, token } = await AuthService.adminLogin(username, password);
+      res.json({ admin, token });
     } catch (error) {
       res.status(400).json({ message: (error as Error).message });
     }
   }
 
   static verifyToken(req: Request, res: Response) {
-    const token = req.headers.authorization as string;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      res.status(401).json({ message: "Token no proporcionado" });
+      return;
+    }
 
     try {
       const decodedToken = AuthService.verifyToken(token);
