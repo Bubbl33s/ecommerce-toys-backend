@@ -8,19 +8,9 @@ import { authorizeRoles } from "../middlewares/rolesMiddleware";
 const router = Router();
 const PREFIX = "/categories";
 
-router.get(PREFIX, authenticateToken, CategoryController.getCategories);
-router.get(
-  `${PREFIX}/:id`,
-  authenticateToken,
-  authorizeRoles(["admin"]),
-  CategoryController.getCategoryById,
-);
-router.get(
-  `${PREFIX}/name/:name`,
-  authenticateToken,
-  authorizeRoles(["admin"]),
-  CategoryController.getCategoryByName,
-);
+router.get(PREFIX, CategoryController.getCategories);
+router.get(`${PREFIX}/:id`, CategoryController.getCategoryById);
+router.get(`${PREFIX}/name/:name`, CategoryController.getCategoryByName);
 router.post(
   PREFIX,
   authenticateToken,
