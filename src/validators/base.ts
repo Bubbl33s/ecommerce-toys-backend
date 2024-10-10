@@ -37,3 +37,11 @@ export const usernameValidator = body("username")
   .withMessage("El nombre de usuario debe ser válido")
   .isLength({ min: 8, max: 25 })
   .withMessage("El nombre de usuario debe tener entre 8 y 25 caracteres");
+
+export const entityNameValidator = body("name")
+  .exists()
+  .withMessage("El nombre es requerido")
+  .isString()
+  .withMessage("El nombre debe ser válido")
+  .isLength({ min: 2, max: 50 })
+  .withMessage("El nombre debe tener entre 2 y 50 caracteres");

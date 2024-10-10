@@ -1,9 +1,13 @@
 import { createUserValidator, updateUserValidator } from "./userValidations";
-import { emailValidator, passwordValidator } from "./base";
+import { createAdminValidator, updateAdminValidator } from "./adminValidations";
+import { emailValidator, passwordValidator, entityNameValidator } from "./base";
 
 export {
-  createUserValidator,
-  updateUserValidator,
   emailValidator,
   passwordValidator,
+  createUserValidator,
+  updateUserValidator,
+  createAdminValidator,
+  updateAdminValidator,
+  entityNameValidator,
 };
