@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { BrandService } from "../services/brandService";
 
 export class BrandController {
-  static async getBrands(_: Request, res: Response) {
+  static async getBrands(_: Request, res: Response, next: NextFunction) {
     try {
       const brands = await BrandService.getBrands();
 
@@ -12,15 +12,11 @@ export class BrandController {
       }
       res.json(brands);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async getBrandById(req: Request, res: Response) {
+  static async getBrandById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
@@ -32,15 +28,11 @@ export class BrandController {
       }
       res.json(brand);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async getBrandByName(req: Request, res: Response) {
+  static async getBrandByName(req: Request, res: Response, next: NextFunction) {
     const { name } = req.params;
 
     try {
@@ -52,15 +44,11 @@ export class BrandController {
       }
       res.json(brand);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async createBrand(req: Request, res: Response) {
+  static async createBrand(req: Request, res: Response, next: NextFunction) {
     const { name, description } = req.body;
 
     try {
@@ -70,15 +58,11 @@ export class BrandController {
       });
       res.json(brand);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async updateBrand(req: Request, res: Response) {
+  static async updateBrand(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const { name, description } = req.body;
 
@@ -89,56 +73,44 @@ export class BrandController {
       });
       res.json(brand);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async activateBrand(req: Request, res: Response) {
+  static async activateBrand(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
       const brand = await BrandService.activateBrand(id);
       res.json(brand);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async deactivateBrand(req: Request, res: Response) {
+  static async deactivateBrand(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     const { id } = req.params;
 
     try {
       const brand = await BrandService.deactivateBrand(id);
       res.json(brand);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async deleteBrand(req: Request, res: Response) {
+  static async deleteBrand(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
       const brand = await BrandService.deleteBrand(id);
       res.json(brand);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 }
