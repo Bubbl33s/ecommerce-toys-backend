@@ -7,7 +7,7 @@ export interface BrandData {
 
 export class BrandService {
   static async getBrands() {
-    return prisma.brand.findMany();
+    return prisma.brand.findMany({ include: { products: true } });
   }
 
   static async getBrandById(id: string) {

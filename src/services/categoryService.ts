@@ -7,7 +7,7 @@ type CategoryData = {
 
 export class CategoryService {
   static async getCategories() {
-    return prisma.category.findMany();
+    return prisma.category.findMany({ include: { products: true } });
   }
 
   static async getCategoryById(id: string) {
