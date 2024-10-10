@@ -30,20 +30,20 @@ router.put(
   authenticateToken,
   UserController.updateUser,
 );
-router.put(
+router.patch(
   `${PREFIX}/password/:id`,
   authenticateToken,
   passwordValidator,
   validate,
   UserController.updatePassword,
 );
-router.put(
-  `${PREFIX}/activate/:id`,
+router.patch(
+  `${PREFIX}/:id/activate`,
   authenticateToken,
   UserController.activateUser,
 );
-router.put(
-  `${PREFIX}/deactivate/:id`,
+router.patch(
+  `${PREFIX}/:id/deactivate`,
   authenticateToken,
   UserController.deactivateUser,
 );

@@ -1,5 +1,4 @@
 import prisma from "./prisma";
-import { validateEntityName } from "../utilities";
 
 type CategoryData = {
   name: string;
@@ -31,8 +30,6 @@ export class CategoryService {
       throw new Error("Ya existe una categoría con ese nombre");
     }
 
-    validateEntityName(name);
-
     return prisma.category.create({
       data: { name, description },
     });
@@ -50,8 +47,6 @@ export class CategoryService {
     if (categoryNameExists && categoryNameExists?.id !== id) {
       throw new Error("Ya existe una categoría con ese nombre");
     }
-
-    validateEntityName(name);
 
     return prisma.category.update({
       where: { id },

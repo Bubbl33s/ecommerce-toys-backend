@@ -1,4 +1,3 @@
-import { validateEntityName } from "../utilities";
 import prisma from "./prisma";
 
 export interface BrandData {
@@ -31,8 +30,6 @@ export class BrandService {
       throw new Error("Ya existe una marca con ese nombre");
     }
 
-    validateEntityName(name);
-
     return prisma.brand.create({
       data: { name, description },
     });
@@ -50,8 +47,6 @@ export class BrandService {
     if (brandNameExists && brandNameExists?.id !== id) {
       throw new Error("Ya existe una marca con ese nombre");
     }
-
-    validateEntityName(name);
 
     return prisma.brand.update({
       where: { id },

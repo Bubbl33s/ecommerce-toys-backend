@@ -28,13 +28,13 @@ router.put(
   validate,
   BrandController.updateBrand,
 );
-router.put(
-  `${PREFIX}/activate/:id`,
+router.patch(
+  `${PREFIX}/:id/activate`,
   authenticateToken,
   BrandController.activateBrand,
 );
-router.put(
-  `${PREFIX}/deactivate/:id`,
+router.patch(
+  `${PREFIX}/:id/deactivate`,
   authenticateToken,
   BrandController.deactivateBrand,
 );

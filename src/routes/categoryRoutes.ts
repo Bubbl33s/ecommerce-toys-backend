@@ -32,13 +32,13 @@ router.put(
   validate,
   CategoryController.updateCategory,
 );
-router.put(
-  `${PREFIX}/activate/:id`,
+router.patch(
+  `${PREFIX}/:id/activate`,
   authenticateToken,
   CategoryController.activateCategory,
 );
-router.put(
-  `${PREFIX}/deactivate/:id`,
+router.patch(
+  `${PREFIX}/:id/deactivate`,
   authenticateToken,
   CategoryController.deactivateCategory,
 );
