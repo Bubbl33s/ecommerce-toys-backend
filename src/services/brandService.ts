@@ -74,15 +74,21 @@ export class BrandService {
       throw new Error("No existe una marca con ese ID");
     }
 
-    // Desactivar los productos relacionados
-    await prisma.product.updateMany({
-      where: { categoryId: id },
-      data: { isDeleted: true },
-    });
+    return prisma.$transaction(async (prismaTx) => {
+      try {
+        // Desactivar los productos relacionados
+        await prismaTx.product.updateMany({
+          where: { categoryId: id },
+          data: { isDeleted: true },
+        });
 
-    return prisma.brand.update({
-      where: { id },
-      data: { isDeleted: true },
+        return prismaTx.brand.update({
+          where: { id },
+          data: { isDeleted: true },
+        });
+      } catch (error) {
+        throw new Error("No se pudo desactivar la marca");
+      }
     });
   }
 

@@ -74,15 +74,21 @@ export class CategoryService {
       throw new Error("No existe una categoría con ese ID");
     }
 
-    // Desactivar los productos relacionados
-    await prisma.product.updateMany({
-      where: { categoryId: id },
-      data: { isDeleted: true },
-    });
+    return prisma.$transaction(async (prismaTx) => {
+      try {
+        // Desactivar los productos relacionados
+        await prismaTx.product.updateMany({
+          where: { categoryId: id },
+          data: { isDeleted: true },
+        });
 
-    return prisma.category.update({
-      where: { id },
-      data: { isDeleted: true },
+        return prismaTx.category.update({
+          where: { id },
+          data: { isDeleted: true },
+        });
+      } catch (error) {
+        throw new Error("No se pudo desactivar la categoría");
+      }
     });
   }
 
