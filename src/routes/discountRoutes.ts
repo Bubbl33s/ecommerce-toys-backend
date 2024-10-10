@@ -8,13 +8,8 @@ import { authorizeRoles } from "../middlewares/rolesMiddleware";
 const router = Router();
 const PREFIX = "/discounts";
 
-router.get(PREFIX, authenticateToken, DiscountController.getDiscounts);
-router.get(
-  `${PREFIX}/:id`,
-  authenticateToken,
-  authorizeRoles(["admin"]),
-  DiscountController.getDiscountById,
-);
+router.get(PREFIX, DiscountController.getDiscounts);
+router.get(`${PREFIX}/:id`, DiscountController.getDiscountById);
 router.post(
   PREFIX,
   authenticateToken,

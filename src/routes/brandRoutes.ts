@@ -8,24 +8,9 @@ import { authorizeRoles } from "../middlewares/rolesMiddleware";
 const router = Router();
 const PREFIX = "/brands";
 
-router.get(
-  PREFIX,
-  authenticateToken,
-  authorizeRoles(["admin"]),
-  BrandController.getBrands,
-);
-router.get(
-  `${PREFIX}/:id`,
-  authenticateToken,
-  authorizeRoles(["admin"]),
-  BrandController.getBrandById,
-);
-router.get(
-  `${PREFIX}/name/:name`,
-  authenticateToken,
-  authorizeRoles(["admin"]),
-  BrandController.getBrandByName,
-);
+router.get(PREFIX, BrandController.getBrands);
+router.get(`${PREFIX}/:id`, BrandController.getBrandById);
+router.get(`${PREFIX}/name/:name`, BrandController.getBrandByName);
 router.post(
   PREFIX,
   authenticateToken,

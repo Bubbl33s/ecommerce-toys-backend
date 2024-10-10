@@ -17,13 +17,13 @@ const PREFIX = "/users";
 router.get(
   PREFIX,
   authenticateToken,
-  authorizeRoles(["admin"]),
+  authorizeRoles(["admin", "user"]),
   UserController.getUsers,
 );
 router.get(
   `${PREFIX}/:id`,
   authenticateToken,
-  authorizeRoles(["admin"]),
+  authorizeRoles(["admin", "user"]),
   UserController.getUserById,
 );
 router.get(
@@ -31,7 +31,7 @@ router.get(
   emailValidator,
   validate,
   authenticateToken,
-  authorizeRoles(["admin"]),
+  authorizeRoles(["admin", "user"]),
   UserController.getUserByEmail,
 );
 router.post(PREFIX, createUserValidator, validate, UserController.createUser);
