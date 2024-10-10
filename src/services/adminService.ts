@@ -67,9 +67,9 @@ export class AdminService {
 
     return prisma.admin.create({
       data: {
-        fullName: fullName,
-        email: email,
-        username: username,
+        fullName,
+        email,
+        username,
         passwordHash: hashedPassword,
       },
     });
