@@ -125,6 +125,12 @@ export class AdminService {
   }
 
   static async deleteAdmin(id: string) {
+    const adminExists = await this.getAdminById(id);
+
+    if (!adminExists) {
+      throw new Error("No existe un administrador con ese ID");
+    }
+
     return prisma.user.delete({
       where: { id },
     });
