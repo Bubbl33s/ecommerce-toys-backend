@@ -12,15 +12,27 @@ import {
   updateAdminValidator,
 } from "../validators/adminValidations";
 import validate from "../middlewares/validate";
+import { authorizeRoles } from "../middlewares/rolesMiddleware";
 
 const router = Router();
 const PREFIX = "/admins";
 
-router.get(PREFIX, authenticateToken, AdminController.getAdmins);
-router.get(`${PREFIX}/:id`, authenticateToken, AdminController.getAdminById);
+router.get(
+  PREFIX,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  AdminController.getAdmins,
+);
+router.get(
+  `${PREFIX}/:id`,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  AdminController.getAdminById,
+);
 router.get(
   `${PREFIX}/email/:email`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   emailValidator,
   validate,
   AdminController.getAdminByEmail,
@@ -28,6 +40,7 @@ router.get(
 router.get(
   `${PREFIX}/username/:username`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   usernameValidator,
   validate,
   AdminController.getAdminByUsername,
@@ -35,6 +48,7 @@ router.get(
 router.post(
   PREFIX,
   authenticateToken,
+  authorizeRoles(["admin"]),
   createAdminValidator,
   validate,
   AdminController.createAdmin,
@@ -42,6 +56,7 @@ router.post(
 router.put(
   `${PREFIX}/:id`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   updateAdminValidator,
   validate,
   AdminController.updateAdmin,
@@ -49,6 +64,7 @@ router.put(
 router.patch(
   `${PREFIX}/:id/password`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   passwordValidator,
   validate,
   AdminController.updatePassword,
@@ -56,14 +72,21 @@ router.patch(
 router.patch(
   `${PREFIX}/:id/activate`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   AdminController.activateAdmin,
 );
 router.patch(
   `${PREFIX}/:id/deactivate`,
   authenticateToken,
+  authorizeRoles(["admin"]),
   AdminController.deactivateAdmin,
 );
-router.delete(`${PREFIX}/:id`, authenticateToken, AdminController.deleteAdmin);
+router.delete(
+  `${PREFIX}/:id`,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  AdminController.deleteAdmin,
+);
 
 router.post(`${PREFIX}/login`, AuthController.adminLogin);
 
