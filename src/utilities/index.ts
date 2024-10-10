@@ -1,4 +1,5 @@
 import { hashPassword, comparePassword } from "./passwordHash";
+import { validateEntityName } from "./productEntitiesNameValidation";
 import {
   validateUsername,
   validateEmail,
@@ -13,4 +14,5 @@ export {
   validateEmail,
   validatePassword,
   validateUsername,
+  validateEntityName,
 };

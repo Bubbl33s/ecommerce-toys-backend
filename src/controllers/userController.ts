@@ -1,21 +1,17 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { UserService } from "../services/userService";
 
 export class UserController {
-  static async getUsers(_: Request, res: Response) {
+  static async getUsers(_: Request, res: Response, next: NextFunction) {
     try {
       const users = await UserService.getUsers();
       res.json(users);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async getUserById(req: Request, res: Response) {
+  static async getUserById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
@@ -27,15 +23,11 @@ export class UserController {
       }
       res.json(user);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async getUserByEmail(req: Request, res: Response) {
+  static async getUserByEmail(req: Request, res: Response, next: NextFunction) {
     const { email } = req.params;
 
     try {
@@ -47,30 +39,22 @@ export class UserController {
       }
       res.json(user);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async createUser(req: Request, res: Response) {
+  static async createUser(req: Request, res: Response, next: NextFunction) {
     const data = req.body;
 
     try {
       const user = await UserService.createUser(data);
       res.json(user);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async updateUser(req: Request, res: Response) {
+  static async updateUser(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const data = req.body;
 
@@ -78,15 +62,11 @@ export class UserController {
       const user = await UserService.updateUser(id, data);
       res.json(user);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async updatePassword(req: Request, res: Response) {
+  static async updatePassword(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const { password } = req.body;
 
@@ -94,56 +74,40 @@ export class UserController {
       const user = await UserService.updatePassword(id, password);
       res.json(user);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async activateUser(req: Request, res: Response) {
+  static async activateUser(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
       const user = await UserService.activateUser(id);
       res.json(user);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async deactivateUser(req: Request, res: Response) {
+  static async deactivateUser(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
       const user = await UserService.deactivateUser(id);
       res.json(user);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 
-  static async deleteUser(req: Request, res: Response) {
+  static async deleteUser(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
     try {
       const user = await UserService.deleteUser(id);
       res.json(user);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-        return;
-      }
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   }
 }

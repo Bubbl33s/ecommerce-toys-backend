@@ -67,9 +67,9 @@ export class AdminService {
 
     return prisma.admin.create({
       data: {
-        fullName: fullName,
-        email: email,
-        username: username,
+        fullName,
+        email,
+        username,
         passwordHash: hashedPassword,
       },
     });
@@ -79,6 +79,12 @@ export class AdminService {
     id: string,
     { fullName, email, username }: UpdateAdminData,
   ) {
+    const adminExists = await this.getAdminById(id);
+
+    if (!adminExists) {
+      throw new Error("No existe un administrador con ese ID");
+    }
+
     validateFullName(fullName);
     validateEmail(email);
     validateUsername(username);
@@ -94,6 +100,12 @@ export class AdminService {
   }
 
   static async updatePassword(id: string, password: string) {
+    const adminExists = await this.getAdminById(id);
+
+    if (!adminExists) {
+      throw new Error("No existe un administrador con ese ID");
+    }
+
     validatePassword(password);
 
     const hashedPassword = await hashPassword(password);
@@ -116,6 +128,12 @@ export class AdminService {
   }
 
   static async deactivateAdmin(id: string) {
+    const adminExists = await this.getAdminById(id);
+
+    if (!adminExists) {
+      throw new Error("No existe un administrador con ese ID");
+    }
+
     return prisma.admin.update({
       where: { id },
       data: {
@@ -125,6 +143,12 @@ export class AdminService {
   }
 
   static async deleteAdmin(id: string) {
+    const adminExists = await this.getAdminById(id);
+
+    if (!adminExists) {
+      throw new Error("No existe un administrador con ese ID");
+    }
+
     return prisma.user.delete({
       where: { id },
     });
