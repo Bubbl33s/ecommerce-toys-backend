@@ -15,5 +15,6 @@ export const discountValidator = [
     .isNumeric()
     .withMessage("El descuento debe ser un número")
     .isFloat({ min: 0, max: 1 })
-    .withMessage("El descuento debe estar entre 0 y 1"),
+    .withMessage("El descuento debe estar entre 0 y 1")
+    .toFloat(),
 ];
