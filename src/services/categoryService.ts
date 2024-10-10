@@ -45,6 +45,12 @@ export class CategoryService {
       throw new Error("No existe una categoría con ese ID");
     }
 
+    const categoryNameExists = await this.getCategoryByName(name);
+
+    if (categoryNameExists && categoryNameExists?.id !== id) {
+      throw new Error("Ya existe una categoría con ese nombre");
+    }
+
     validateEntityName(name);
 
     return prisma.category.update({

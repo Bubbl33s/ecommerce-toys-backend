@@ -45,6 +45,12 @@ export class BrandService {
       throw new Error("No existe una marca con ese ID");
     }
 
+    const brandNameExists = await this.getBrandByName(name);
+
+    if (brandNameExists && brandNameExists?.id !== id) {
+      throw new Error("Ya existe una marca con ese nombre");
+    }
+
     validateEntityName(name);
 
     return prisma.brand.update({

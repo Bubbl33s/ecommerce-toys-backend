@@ -1,10 +1,5 @@
 import prisma from "./prisma";
-import {
-  hashPassword,
-  validateFullName,
-  validateEmail,
-  validatePassword,
-} from "../utilities";
+import { hashPassword } from "../utilities";
 
 type CreateUserData = {
   fullName: string;
@@ -48,10 +43,6 @@ export class UserService {
       throw new Error("Ya existe un usuario con ese correo electrónico");
     }
 
-    validateFullName(fullName);
-    validateEmail(email);
-    validatePassword(password);
-
     const hashedPassword = await hashPassword(password);
 
     return prisma.user.create({
@@ -70,8 +61,11 @@ export class UserService {
       throw new Error("No existe un usuario con ese ID");
     }
 
-    validateFullName(fullName);
-    validateEmail(email);
+    const userWithSameEmail = await this.getUserByEmail(email);
+
+    if (userWithSameEmail && userWithSameEmail.id !== id) {
+      throw new Error("Ya existe un usuario con ese correo electrónico");
+    }
 
     return prisma.user.update({
       where: { id },
@@ -85,8 +79,6 @@ export class UserService {
     if (!userExists) {
       throw new Error("No existe un usuario con ese ID");
     }
-
-    validatePassword(password);
 
     const hashedPassword = await hashPassword(password);
 

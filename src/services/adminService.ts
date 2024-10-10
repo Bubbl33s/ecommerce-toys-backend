@@ -1,11 +1,5 @@
 import prisma from "./prisma";
-import {
-  hashPassword,
-  validateFullName,
-  validateEmail,
-  validatePassword,
-  validateUsername,
-} from "../utilities";
+import { hashPassword } from "../utilities";
 
 type UpdateAdminData = {
   fullName: string;
@@ -58,11 +52,6 @@ export class AdminService {
       throw new Error("Ya existe un administrador con ese nombre de usuario");
     }
 
-    validateFullName(fullName);
-    validateEmail(email);
-    validateUsername(username);
-    validatePassword(password);
-
     const hashedPassword = await hashPassword(password);
 
     return prisma.admin.create({
@@ -85,9 +74,17 @@ export class AdminService {
       throw new Error("No existe un administrador con ese ID");
     }
 
-    validateFullName(fullName);
-    validateEmail(email);
-    validateUsername(username);
+    const adminWithSameEmail = await this.getAdminByEmail(email);
+
+    if (adminWithSameEmail && adminWithSameEmail.id !== id) {
+      throw new Error("Ya existe un administrador con ese correo electrónico");
+    }
+
+    const adminWithSameUsername = await this.getAdminByUsername(username);
+
+    if (adminWithSameUsername && adminWithSameUsername.id !== id) {
+      throw new Error("Ya existe un administrador con ese nombre de usuario");
+    }
 
     return prisma.admin.update({
       where: { id },
@@ -105,8 +102,6 @@ export class AdminService {
     if (!adminExists) {
       throw new Error("No existe un administrador con ese ID");
     }
-
-    validatePassword(password);
 
     const hashedPassword = await hashPassword(password);
 
