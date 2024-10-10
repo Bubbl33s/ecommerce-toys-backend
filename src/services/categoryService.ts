@@ -74,6 +74,12 @@ export class CategoryService {
       throw new Error("No existe una categoría con ese ID");
     }
 
+    // Desactivar los productos relacionados
+    await prisma.product.updateMany({
+      where: { categoryId: id },
+      data: { isDeleted: true },
+    });
+
     return prisma.category.update({
       where: { id },
       data: { isDeleted: true },

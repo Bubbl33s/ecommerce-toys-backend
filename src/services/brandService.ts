@@ -74,6 +74,12 @@ export class BrandService {
       throw new Error("No existe una marca con ese ID");
     }
 
+    // Desactivar los productos relacionados
+    await prisma.product.updateMany({
+      where: { categoryId: id },
+      data: { isDeleted: true },
+    });
+
     return prisma.brand.update({
       where: { id },
       data: { isDeleted: true },
