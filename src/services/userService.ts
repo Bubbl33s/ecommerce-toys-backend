@@ -1,5 +1,7 @@
 import prisma from "./prisma";
 import { hashPassword } from "../utilities";
+import path from "path";
+import { promises as fs } from "fs";
 
 type CreateUserData = {
   fullName: string;
@@ -103,6 +105,58 @@ export class UserService {
         passwordHash: hashedPassword,
       },
     });
+  }
+
+  static async updateUserImage(id: string, profileImage: string) {
+    const userExists = await this.getUserById(id);
+
+    if (!userExists) {
+      throw new Error("No existe un usuario con ese ID");
+    }
+
+    // Si el usuario ya tiene una imagen de perfil, eliminarla del servidor
+    await this.deleteUserImage(id);
+
+    return prisma.user.update({
+      where: { id },
+      data: {
+        profileImage,
+      },
+    });
+  }
+
+  static async deleteUserImage(id: string) {
+    const userExists = await this.getUserById(id);
+
+    if (!userExists) {
+      throw new Error("No existe un usuario con ese ID");
+    }
+
+    if (userExists.profileImage) {
+      const oldImagePath = path.join(
+        __dirname,
+        "../uploads/userImages",
+        userExists.profileImage,
+      );
+
+      try {
+        // Verificar si el archivo existe
+        await fs.access(oldImagePath);
+        // Eliminar el archivo
+        await fs.unlink(oldImagePath);
+
+        return prisma.user.update({
+          where: { id },
+          data: {
+            profileImage: null,
+          },
+        });
+      } catch (err) {
+        throw new Error("No se pudo eliminar la imagen anterior");
+      }
+    }
+
+    return userExists;
   }
 
   static async activateUser(id: string) {

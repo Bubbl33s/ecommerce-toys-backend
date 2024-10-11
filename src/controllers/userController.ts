@@ -78,6 +78,42 @@ export class UserController {
     }
   }
 
+  static async updateUserImage(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { id } = req.params;
+      const { file } = req.body;
+
+      if (!file) {
+        res.status(400).json({ error: "No se ha enviado un archivo" });
+        return;
+      }
+
+      const user = await UserService.updateUserImage(id, file);
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteUserImage(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { id } = req.params;
+
+    try {
+      const user = await UserService.deleteUserImage(id);
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async activateUser(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 

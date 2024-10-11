@@ -10,6 +10,7 @@ import {
 } from "../validators";
 import validate from "../middlewares/validate";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
+import { uploadUserImage } from "../middlewares/multerConfig";
 
 const router = Router();
 const PREFIX = "/users";
@@ -50,6 +51,13 @@ router.patch(
   passwordValidator,
   validate,
   UserController.updatePassword,
+);
+router.patch(
+  `${PREFIX}/:id/image`,
+  authenticateToken,
+  authorizeRoles(["admin", "user"]),
+  uploadUserImage.single("image"),
+  UserController.updateUserImage,
 );
 router.patch(
   `${PREFIX}/:id/activate`,
