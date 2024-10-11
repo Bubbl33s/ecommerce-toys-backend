@@ -1,5 +1,7 @@
 import prisma from "./prisma";
 import { hashPassword } from "../utilities";
+import path from "path";
+import { promises as fs } from "fs";
 
 type UpdateAdminData = {
   fullName: string;
@@ -111,6 +113,58 @@ export class AdminService {
         passwordHash: hashedPassword,
       },
     });
+  }
+
+  static async updateAdminImage(id: string, profileImage: string) {
+    const adminExists = await this.getAdminById(id);
+
+    if (!adminExists) {
+      throw new Error("No existe un usuario con ese ID");
+    }
+
+    // Si el administrador ya tiene una imagen de perfil, eliminarla del servidor
+    await this.deleteAdminImage(id);
+
+    return prisma.admin.update({
+      where: { id },
+      data: {
+        profileImage,
+      },
+    });
+  }
+
+  static async deleteAdminImage(id: string) {
+    const adminExists = await this.getAdminById(id);
+
+    if (!adminExists) {
+      throw new Error("No existe un administrador con ese ID");
+    }
+
+    if (adminExists.profileImage) {
+      const oldImagePath = path.join(
+        __dirname,
+        "../uploads/adminImages",
+        adminExists.profileImage,
+      );
+
+      try {
+        // Verificar si el archivo existe
+        await fs.access(oldImagePath);
+        // Eliminar el archivo
+        await fs.unlink(oldImagePath);
+
+        return prisma.admin.update({
+          where: { id },
+          data: {
+            profileImage: null,
+          },
+        });
+      } catch (err) {
+        throw new Error("No se pudo eliminar la imagen anterior");
+      }
+    }
+
+    return adminExists;
   }
 
   static async activateAdmin(id: string) {

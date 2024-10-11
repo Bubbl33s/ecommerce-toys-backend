@@ -13,6 +13,7 @@ import {
 } from "../validators/adminValidations";
 import validate from "../middlewares/validate";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
+import { uploadAdminImage } from "../middlewares/multerConfig";
 
 const router = Router();
 const PREFIX = "/admins";
@@ -68,6 +69,19 @@ router.patch(
   passwordValidator,
   validate,
   AdminController.updatePassword,
+);
+router.patch(
+  `${PREFIX}/:id/image`,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  uploadAdminImage.single("image"),
+  AdminController.updateAdminImage,
+);
+router.patch(
+  `${PREFIX}/:id/image-delete`,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  AdminController.deleteAdminImage,
 );
 router.patch(
   `${PREFIX}/:id/activate`,

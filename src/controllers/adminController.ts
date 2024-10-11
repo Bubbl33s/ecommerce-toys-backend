@@ -102,6 +102,41 @@ export class AdminController {
     }
   }
 
+  static async updateAdminImage(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { id } = req.params;
+
+    try {
+      const file = req.file;
+
+      if (!file) {
+        throw new Error("No se ha enviado un archivo");
+      }
+      const admin = await AdminService.updateAdminImage(id, file?.path);
+      res.json(admin);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteAdminImage(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { id } = req.params;
+
+    try {
+      await AdminService.deleteAdminImage(id);
+      res.json({ message: "Imagen eliminada" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async activateAdmin(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 

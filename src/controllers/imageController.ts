@@ -37,7 +37,7 @@ export class ImageController {
 
   static async createImage(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = req.body;
+      const { productId } = req.body;
       const file = req.file;
 
       if (!file) {
@@ -46,7 +46,7 @@ export class ImageController {
 
       const image = await ImageService.createImage({
         url: file.path,
-        productId: data.productId,
+        productId,
       });
 
       res.json(image);

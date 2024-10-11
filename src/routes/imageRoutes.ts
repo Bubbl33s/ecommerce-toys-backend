@@ -2,7 +2,7 @@ import { Router } from "express";
 import { ImageController } from "../controllers/imageController";
 import { authenticateToken } from "../middlewares/authMiddleware";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
-import uploadProductImage from "../middlewares/multerConfig";
+import { uploadProductImage } from "../middlewares/multerConfig";
 
 const router = Router();
 const PREFIX = "/images";
