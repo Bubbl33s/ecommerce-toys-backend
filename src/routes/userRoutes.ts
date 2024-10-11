@@ -60,6 +60,12 @@ router.patch(
   UserController.updateUserImage,
 );
 router.patch(
+  `${PREFIX}/:id/delete-image`,
+  authenticateToken,
+  authorizeRoles(["admin", "user"]),
+  UserController.deleteUserImage,
+);
+router.patch(
   `${PREFIX}/:id/activate`,
   authenticateToken,
   authorizeRoles(["admin", "user"]),

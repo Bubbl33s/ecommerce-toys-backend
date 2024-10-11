@@ -83,16 +83,17 @@ export class UserController {
     res: Response,
     next: NextFunction,
   ) {
+    const { id } = req.params;
+
     try {
-      const { id } = req.params;
-      const { file } = req.body;
+      const file = req.file;
 
       if (!file) {
         res.status(400).json({ error: "No se ha enviado un archivo" });
         return;
       }
 
-      const user = await UserService.updateUserImage(id, file);
+      const user = await UserService.updateUserImage(id, file.path);
       res.json(user);
     } catch (error) {
       next(error);
