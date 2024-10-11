@@ -43,15 +43,30 @@ export class UserService {
       throw new Error("Ya existe un usuario con ese correo electrónico");
     }
 
-    const hashedPassword = await hashPassword(password);
+    try {
+      return prisma.$transaction(async (prismaTx) => {
+        const hashedPassword = await hashPassword(password);
 
-    return prisma.user.create({
-      data: {
-        fullName,
-        email,
-        passwordHash: hashedPassword,
-      },
-    });
+        const user = await prismaTx.user.create({
+          data: {
+            fullName,
+            email,
+            passwordHash: hashedPassword,
+          },
+        });
+
+        // Crear el carrito
+        await prismaTx.cart.create({
+          data: {
+            userId: user.id,
+          },
+        });
+
+        return user;
+      });
+    } catch (error) {
+      throw new Error("No se pudo crear el usuario");
+    }
   }
 
   static async updateUser(id: string, { fullName, email }: UpdateUserData) {
@@ -127,8 +142,20 @@ export class UserService {
       throw new Error("No existe un usuario con ese ID");
     }
 
-    return prisma.user.delete({
-      where: { id },
-    });
+    try {
+      return prisma.$transaction(async (prismaTx) => {
+        const user = await prismaTx.user.delete({
+          where: { id },
+        });
+
+        await prismaTx.cart.delete({
+          where: { userId: user.id },
+        });
+
+        return user;
+      });
+    } catch (error) {
+      throw new Error("No se pudo eliminar el usuario");
+    }
   }
 }

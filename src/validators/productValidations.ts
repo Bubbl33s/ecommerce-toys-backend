@@ -56,10 +56,3 @@ export const productValidator = [
     .isString()
     .withMessage("El descuento debe ser válido"),
 ];
-
-export const quantityValidator = body("quantity")
-  .exists()
-  .withMessage("La cantidad es requerida")
-  .isInt()
-  .withMessage("La cantidad debe ser un número entero")
-  .toInt();
