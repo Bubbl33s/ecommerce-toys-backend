@@ -2,10 +2,7 @@ import { Router } from "express";
 import { ProductController } from "../controllers/productController";
 import { authenticateToken } from "../middlewares/authMiddleware";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
-import {
-  productValidator,
-  quantityValidator,
-} from "../validators/productValidations";
+import { productValidator, quantityValidator } from "../validators";
 import validate from "../middlewares/validate";
 
 const router = Router();

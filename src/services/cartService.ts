@@ -1,5 +1,11 @@
 import prisma from "./prisma";
 
+type AddCartItemData = {
+  cartId: string;
+  productId: string;
+  quantity: number;
+};
+
 export class CartService {
   static async getCartById(id: string) {
     return prisma.cart.findUnique({
@@ -15,11 +21,7 @@ export class CartService {
     });
   }
 
-  static async addCartItem(
-    cartId: string,
-    productId: string,
-    quantity: number,
-  ) {
+  static async addCartItem({ cartId, productId, quantity }: AddCartItemData) {
     const cartExists = await this.getCartById(cartId);
 
     if (!cartExists) {

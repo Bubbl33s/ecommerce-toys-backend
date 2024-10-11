@@ -45,3 +45,12 @@ export const entityNameValidator = body("name")
   .withMessage("El nombre debe ser válido")
   .isLength({ min: 2, max: 50 })
   .withMessage("El nombre debe tener entre 2 y 50 caracteres");
+
+export const quantityValidator = body("quantity")
+  .exists()
+  .withMessage("La cantidad es requerida")
+  .isNumeric()
+  .withMessage("La cantidad debe ser un número")
+  .isInt({ min: 1 })
+  .withMessage("La cantidad debe ser un número entero mayor a 0")
+  .toInt();

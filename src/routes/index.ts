@@ -6,6 +6,7 @@ import brandRoutes from "./brandRoutes";
 import materialRoutes from "./materialRoutes";
 import discountRoutes from "./discountRoutes";
 import productRoutes from "./productRoutes";
+import cartRoutes from "./cartRoutes";
 
 export default function setupRoutes(app: Application) {
   const API_PREFIX = "/api";
@@ -17,4 +18,5 @@ export default function setupRoutes(app: Application) {
   app.use(API_PREFIX, materialRoutes);
   app.use(API_PREFIX, discountRoutes);
   app.use(API_PREFIX, productRoutes);
+  app.use(API_PREFIX, cartRoutes);
 }
