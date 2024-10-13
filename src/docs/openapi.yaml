@@ -25,6 +25,8 @@ tags:
     description: Operaciones relacionadas con los descuentos
   - name: Products
     description: Operaciones relacionadas con los productos
+  - name: Images
+    description: Operaciones relacionadas con las imágenes de los productos
   - name: Carts
     description: Operaciones relacionadas con los carritos de compra
 
@@ -1708,6 +1710,128 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
 
+  # IMAGES
+  /images:
+    get:
+      tags:
+        - Images
+      summary: Obtener todas las imágenes
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/image"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Images
+      summary: Subir una imagen
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  $ref: "#/components/bases/image"
+                productId:
+                  $ref: "#/components/bases/id"
+      responses:
+        201:
+          $ref: "#/components/responses/image"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /images/{id}:
+    get:
+      tags:
+        - Images
+      summary: Obtener una imagen por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la imagen
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/image"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Images
+      summary: Eliminar una imagen
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la imagen
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/image"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /images/product/{productId}:
+    get:
+      tags:
+        - Images
+      summary: Obtener todas las imágenes de un producto
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/image"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1858,6 +1982,22 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/product"
+
+    # IMAGES
+    image:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: "#/components/bases/id"
+              url:
+                type: string
+                example: "https://example.com/image.jpg"
+              productId:
+                $ref: "#/components/bases/id"
 
   # BASES
   bases:
@@ -2320,3 +2460,18 @@ components:
           $ref: "#/components/bases/date"
         isDeleted:
           $ref: "#/components/bases/isDeleted"
+
+    # IMAGES
+    image:
+      type: object
+      required:
+        - url
+        - productId
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        url:
+          type: string
+          example: "https://example.com/image.jpg"
+        productId:
+          $ref: "#/components/bases/id"
