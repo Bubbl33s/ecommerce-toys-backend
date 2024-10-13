@@ -25,6 +25,8 @@ tags:
     description: Operaciones relacionadas con los descuentos
   - name: Products
     description: Operaciones relacionadas con los productos
+  - name: Images
+    description: Operaciones relacionadas con las imágenes de los productos
   - name: Carts
     description: Operaciones relacionadas con los carritos de compra
 
@@ -1490,6 +1492,501 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
 
+  # PRODUCTS
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Obtener todos los productos
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/product"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Products
+      summary: Crear un producto
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/product"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/product"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Obtener un producto por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Products
+      summary: Actualizar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/product"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Products
+      summary: Eliminar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/product"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}/stock:
+    patch:
+      tags:
+        - Products
+      summary: Actualizar el stock de un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stock:
+                  type: number
+                  example: 10
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}/activate:
+    patch:
+      tags:
+        - Products
+      summary: Activar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}/deactivate:
+    patch:
+      tags:
+        - Products
+      summary: Desactivar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # IMAGES
+  /images:
+    get:
+      tags:
+        - Images
+      summary: Obtener todas las imágenes
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/image"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Images
+      summary: Subir una imagen
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  $ref: "#/components/bases/image"
+                productId:
+                  $ref: "#/components/bases/id"
+      responses:
+        201:
+          $ref: "#/components/responses/image"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /images/{id}:
+    get:
+      tags:
+        - Images
+      summary: Obtener una imagen por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la imagen
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/image"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Images
+      summary: Eliminar una imagen
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la imagen
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/image"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /images/product/{productId}:
+    get:
+      tags:
+        - Images
+      summary: Obtener todas las imágenes de un producto
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/image"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # CARTS
+  /carts/{id}:
+    get:
+      tags:
+        - Carts
+      summary: Obtener un carrito por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /carts/user/{userId}:
+    get:
+      tags:
+        - Carts
+      summary: Obtener el carrito de un usuario
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /carts/item:
+    post:
+      tags:
+        - Carts
+      summary: Agregar un producto al carrito
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  $ref: "#/components/bases/id"
+                quantity:
+                  type: number
+                  example: 2
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /carts/item/{cartItemId}:
+    patch:
+      tags:
+        - Carts
+      summary: Actualizar la cantidad de un producto en el carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cartItemId
+          in: path
+          required: true
+          description: ID del item del carrito
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  example: 3
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Carts
+      summary: Eliminar un producto del carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cartItemId
+          in: path
+          required: true
+          description: ID del item del carrito
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1632,6 +2129,38 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/discount"
+
+    # PRODUCTS
+    product:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/product"
+
+    # IMAGES
+    image:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: "#/components/bases/id"
+              url:
+                type: string
+                example: "https://example.com/image.jpg"
+              productId:
+                $ref: "#/components/bases/id"
+
+    # CARTS
+    cart:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/cart"
 
   # BASES
   bases:
@@ -1802,6 +2331,38 @@ components:
           format: float
           example: 10.0
 
+    # PRODUCTS
+    product:
+      type: object
+      required:
+        - name
+        - price
+        - stock
+        - categoryId
+        - brandId
+      properties:
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+        price:
+          type: number
+          format: float
+          example: 100.0
+        stock:
+          type: number
+          example: 100
+        categoryId:
+          $ref: "#/components/bases/id"
+        brandId:
+          $ref: "#/components/bases/id"
+        materialId:
+          $ref: "#/components/bases/id"
+          nullable: true
+        discountId:
+          $ref: "#/components/bases/id"
+          nullable: true
+
   # SCHEMAS
   schemas:
     # USERS
@@ -1892,6 +2453,7 @@ components:
           $ref: "#/components/bases/name"
         description:
           $ref: "#/components/bases/description"
+          nullable: true
         products:
           type: array
           items:
@@ -1919,6 +2481,7 @@ components:
           $ref: "#/components/bases/name"
         description:
           $ref: "#/components/bases/description"
+          nullable: true
         products:
           type: array
           items:
@@ -1946,6 +2509,7 @@ components:
           $ref: "#/components/bases/name"
         description:
           $ref: "#/components/bases/description"
+          nullable: true
         products:
           type: array
           items:
@@ -1991,3 +2555,124 @@ components:
           $ref: "#/components/bases/date"
         isDeleted:
           $ref: "#/components/bases/isDeleted"
+
+    # PRODUCTS
+    product:
+      type: object
+      required:
+        - name
+        - price
+        - stock
+        - category
+        - brand
+        - material
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+          nullable: true
+        price:
+          type: number
+          format: float
+          example: 100.0
+        stock:
+          type: number
+          example: 100
+        category:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            name: "Juguetes"
+            description: "Juguetes para niños"
+        brand:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            name: "Genérica"
+            description: "Marca genérica"
+        material:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            name: "Plástico"
+            description: "Plástico reciclado"
+          nullable: true
+        discount:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            description: "Descuento por nuevo producto"
+            discount: 10.0
+          nullable: true
+        images:
+          type: array
+          items:
+            type: string
+            format: binary
+            example:
+              [
+                "https://example.com/images/product.jpg",
+                "https://example.com/images/product2.jpg",
+              ]
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # IMAGES
+    image:
+      type: object
+      required:
+        - url
+        - productId
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        url:
+          type: string
+          example: "https://example.com/image.jpg"
+        productId:
+          $ref: "#/components/bases/id"
+
+    # CART
+    cart:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "cart123"
+        user:
+          type: object
+          properties:
+            id:
+              $ref: "#/components/bases/id"
+            fullName:
+              $ref: "#/components/bases/fullName"
+            email:
+              $ref: "#/components/bases/email"
+        products:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: "#/components/schemas/cartItem"
+
+    # CART ITEM
+    cartItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "product123"
+        cartId:
+          $ref: "#/components/bases/id"
+        productId:
+          $ref: "#/components/bases/id"
+        quantity:
+          type: number
+          example: 2

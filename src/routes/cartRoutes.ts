@@ -8,18 +8,8 @@ import validate from "../middlewares/validate";
 const router = Router();
 const PREFIX = "/carts";
 
-router.get(
-  `${PREFIX}/:id`,
-  authenticateToken,
-  authorizeRoles(["admin", "user"]),
-  CartController.getCartById,
-);
-router.get(
-  `${PREFIX}/user/:userId`,
-  authenticateToken,
-  authorizeRoles(["admin", "user"]),
-  CartController.getCartByUserId,
-);
+router.get(`${PREFIX}/:id`, CartController.getCartById);
+router.get(`${PREFIX}/user/:userId`, CartController.getCartByUserId);
 router.post(
   `${PREFIX}/item`,
   authenticateToken,
