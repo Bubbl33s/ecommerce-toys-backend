@@ -507,7 +507,7 @@ components:
     image:
       type: string
       format: binary
-      description: La imagen del usuario a subir.
+      description: Imagen a subir.
 
   # REQUEST BODIES
   requestBodies:
