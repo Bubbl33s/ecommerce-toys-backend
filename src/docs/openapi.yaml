@@ -1,0 +1,329 @@
+openapi: 3.0.0
+info:
+  title: E-commerce Toys API
+  description: "API de E-commerce de Juguetes para el Bootcamp TOP Full Stack de Make it Real. Tecnologías utilizadas: Node.js, TypeScript, Express, PostgreSQL, Prisma, JWT, Swagger. Desarrollado por: Valeria Lozano."
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor de desarrollo
+
+tags:
+  - name: Auth
+    description: Operaciones relacionadas con la autenticación de usuarios
+  - name: Users
+    description: Operaciones relacionadas con los usuarios
+  - name: Admins
+    description: Operaciones relacionadas con los administradores
+  - name: Categories
+    description: Operaciones relacionadas con las categorías
+  - name: Brands
+    description: Operaciones relacionadas con las marcas
+  - name: Materials
+    description: Operaciones relacionadas con los materiales
+  - name: Discounts
+    description: Operaciones relacionadas con los descuentos
+  - name: Products
+    description: Operaciones relacionadas con los productos
+  - name: Images
+    description: Operaciones relacionadas con las imágenes de los productos
+  - name: Carts
+    description: Operaciones relacionadas con los carritos de compra
+
+paths:
+  # AUTH
+  /users/login:
+    post:
+      tags:
+        - Auth
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userLogin"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userLoginResponse"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/login:
+    post:
+      tags:
+        - Auth
+      summary: Iniciar sesión como administrador
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/adminLogin"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/adminLoginResponse"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # CATEGORIES
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Obtener todas las categorías
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "jndasl97jnias7280004872nk"
+                    name:
+                      type: string
+                      example: "Educational"
+                    description:
+                      type: string
+                      nullable: true
+                      example: "Toys that help children learn"
+                    products:
+                      type: array
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2021-09-01T00:00:00.000Z"
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: "2021-09-01T00:00:00.000Z"
+                    isDeleted:
+                      type: boolean
+                      example: false
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Token JWT para autenticación. Los usuarios autenticados pueden tener uno de los siguientes roles: "admin", "user".'
+
+  # RESPONSES
+  responses:
+    BadRequest:
+      description: Datos no válidos. La solicitud no se puede procesar debido a errores de cliente.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Datos no válidos. Asegúrate de que todos los campos requeridos estén presentes y sean correctos."
+              validationErrors:
+                type: array
+                items:
+                  type: string
+                example:
+                  [
+                    "El campo 'nombre' es requerido.",
+                    "La dirección de correo electrónico no es válida.",
+                    "Ya existe un usuario con el correo electrónico",
+                  ]
+
+    Unauthorized:
+      description: No autenticado. Se requiere un token válido.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "No autenticado. Se requiere un token válido."
+
+    Forbidden:
+      description: No tienes permisos para acceder a este recurso.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Acceso prohibido. No tienes los permisos necesarios."
+
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "No se encontró el recurso solicitado"
+
+    InternalServerError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Error interno del servidor"
+
+  # SCHEMAS
+  schemas:
+    # AUTH
+    userLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: "correo@ejemplo.com"
+          description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
+        password:
+          type: string
+          example: "Abcd1234_"
+          description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
+
+    userLoginResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/user"
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjIwZjQwZjIwZjIwZjIwZjIwZjIwZjIiLCJyb2xlIjoidXNlciIsImlhdCI6MTYzMDIwNjQwMCwiZXhwIjoxNjMwMjA2NDAwfQ.7"
+
+    adminLogin:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: "janedoe"
+          description: Nombre de usuario del administrador
+        password:
+          type: string
+          example: "Abcd1234_"
+          description: Contraseña del administrador, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
+
+    adminLoginResponse:
+      type: object
+      properties:
+        admin:
+          $ref: "#/components/schemas/admin"
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjIwZjQwZjIwZjIwZjIwZjIwZjIwZjIiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2MzAyMDY0MDAsImV4cCI6MTYzMDIwNjQwMH0.7"
+
+    # USERS
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "jndasl97jnias7280004872nk"
+        fullName:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          example: "john.doe@example.com"
+        passwordHash:
+          type: string
+          example: "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36FjsdY4Z5k6Q5J5Z5J5J5K"
+        profileImage:
+          type: string
+          nullable: true
+          example: "https://example.com/images/profile.jpg"
+        cart:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              example: "cart123"
+        orders:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "order123"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2021-09-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2021-09-01T00:00:00.000Z"
+        isDeleted:
+          type: boolean
+          example: false
+
+    # ADMINS
+    admin:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "jndasl97jnias7280004872nk"
+        fullName:
+          type: string
+          example: "Jane Doe"
+        email:
+          type: string
+          example: "jane.doe@example.com"
+        username:
+          type: string
+          example: "janedoe"
+        passwordHash:
+          type: string
+          example: "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36FjsdY4Z5k6Q5J5Z5J5J5K"
+        profileImage:
+          type: string
+          nullable: true
+          example: "https://example.com/images/profile.jpg"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2021-09-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2021-09-01T00:00:00.000Z"
+        isDeleted:
+          type: boolean
+          example: false
