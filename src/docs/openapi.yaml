@@ -746,9 +746,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  $ref: "#/components/schemas/category"
+                $ref: "#/components/schemas/category"
         400:
           $ref: "#/components/responses/BadRequest"
         401:
@@ -948,9 +946,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  $ref: "#/components/schemas/brand"
+                $ref: "#/components/schemas/brand"
         400:
           $ref: "#/components/responses/BadRequest"
         401:
@@ -1150,9 +1146,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  $ref: "#/components/schemas/material"
+                $ref: "#/components/schemas/material"
         400:
           $ref: "#/components/responses/BadRequest"
         401:
@@ -1352,9 +1346,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  $ref: "#/components/schemas/discount"
+                $ref: "#/components/schemas/discount"
         400:
           $ref: "#/components/responses/BadRequest"
         401:
@@ -1906,8 +1898,8 @@ components:
             type: object
             properties:
               id:
-              type: string
-              example: "product123"
+                type: string
+                example: "product123"
         createdAt:
           $ref: "#/components/bases/date"
         updatedAt:
@@ -1933,8 +1925,8 @@ components:
             type: object
             properties:
               id:
-              type: string
-              example: "product123"
+                type: string
+                example: "product123"
         createdAt:
           $ref: "#/components/bases/date"
         updatedAt:
@@ -1960,8 +1952,8 @@ components:
             type: object
             properties:
               id:
-              type: string
-              example: "product123"
+                type: string
+                example: "product123"
         createdAt:
           $ref: "#/components/bases/date"
         updatedAt:
@@ -1991,8 +1983,8 @@ components:
             type: object
             properties:
               id:
-              type: string
-              example: "product123"
+                type: string
+                example: "product123"
         createdAt:
           $ref: "#/components/bases/date"
         updatedAt:
