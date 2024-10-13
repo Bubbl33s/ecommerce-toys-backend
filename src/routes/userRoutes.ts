@@ -15,18 +15,8 @@ import { uploadUserImage } from "../middlewares/multerConfig";
 const router = Router();
 const PREFIX = "/users";
 
-router.get(
-  PREFIX,
-  authenticateToken,
-  authorizeRoles(["admin", "user"]),
-  UserController.getUsers,
-);
-router.get(
-  `${PREFIX}/:id`,
-  authenticateToken,
-  authorizeRoles(["admin", "user"]),
-  UserController.getUserById,
-);
+router.get(PREFIX, UserController.getUsers);
+router.get(`${PREFIX}/:id`, UserController.getUserById);
 router.get(
   `${PREFIX}/email/:email`,
   emailValidator,

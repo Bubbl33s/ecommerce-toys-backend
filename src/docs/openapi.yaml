@@ -42,14 +42,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/userLogin"
+              $ref: "#/components/requestBodies/userLogin"
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/userLoginResponse"
+                $ref: "#/components/responses/userLogin"
         400:
           $ref: "#/components/responses/BadRequest"
         500:
@@ -65,58 +65,307 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/adminLogin"
+              $ref: "#/components/requestBodies/adminLogin"
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/adminLoginResponse"
+                $ref: "#/components/responses/adminLogin"
         400:
           $ref: "#/components/responses/BadRequest"
         500:
           $ref: "#/components/responses/InternalServerError"
 
-  # CATEGORIES
-  /categories:
+  # USERS
+  /users:
     get:
       tags:
-        - Categories
-      summary: Obtener todas las categorías
+        - Users
+      summary: Obtener todos los usuarios
+      security:
+        - bearerAuth: []
       responses:
         200:
-          description: OK
+          $ref: "#/components/responses/user"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Users
+      summary: Crear un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/userCreate"
+      responses:
+        201:
+          description: Creado
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      example: "jndasl97jnias7280004872nk"
-                    name:
-                      type: string
-                      example: "Educational"
-                    description:
-                      type: string
-                      nullable: true
-                      example: "Toys that help children learn"
-                    products:
-                      type: array
-                    createdAt:
-                      type: string
-                      format: date-time
-                      example: "2021-09-01T00:00:00.000Z"
-                    updatedAt:
-                      type: string
-                      format: date-time
-                      example: "2021-09-01T00:00:00.000Z"
-                    isDeleted:
-                      type: boolean
-                      example: false
+                $ref: "#/components/schemas/user"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Obtener un usuario por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Users
+      summary: Actualizar un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/userUpdate"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Users
+      summary: Eliminar un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/email/{email}:
+    get:
+      tags:
+        - Users
+      summary: Obtener un usuario por correo electrónico
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: Correo electrónico del usuario
+          schema:
+            $ref: "#/components/bases/email"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/password/{id}:
+    patch:
+      tags:
+        - Users
+      summary: Actualizar la contraseña de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/updatePassword"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}/image:
+    patch:
+      tags:
+        - Users
+      summary: Actualizar la imagen de perfil de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  $ref: "#/components/bases/image"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}/delete-image:
+    patch:
+      tags:
+        - Users
+      summary: Eliminar la imagen de perfil de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}/activate:
+    patch:
+      tags:
+        - Users
+      summary: Activar un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}/deactivate:
+    patch:
+      tags:
+        - Users
+      summary: Desactivar un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -130,6 +379,7 @@ components:
 
   # RESPONSES
   responses:
+    # GENERAL
     BadRequest:
       description: Datos no válidos. La solicitud no se puede procesar debido a errores de cliente.
       content:
@@ -195,25 +445,8 @@ components:
                 type: string
                 example: "Error interno del servidor"
 
-  # SCHEMAS
-  schemas:
     # AUTH
     userLogin:
-      type: object
-      required:
-        - email
-        - password
-      properties:
-        email:
-          type: string
-          example: "correo@ejemplo.com"
-          description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
-        password:
-          type: string
-          example: "Abcd1234_"
-          description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
-
-    userLoginResponse:
       type: object
       properties:
         user:
@@ -224,21 +457,6 @@ components:
 
     adminLogin:
       type: object
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-          example: "janedoe"
-          description: Nombre de usuario del administrador
-        password:
-          type: string
-          example: "Abcd1234_"
-          description: Contraseña del administrador, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
-
-    adminLoginResponse:
-      type: object
       properties:
         admin:
           $ref: "#/components/schemas/admin"
@@ -248,27 +466,130 @@ components:
 
     # USERS
     user:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/user"
+
+  # BASES
+  bases:
+    id:
+      type: string
+      example: "jndasl97jnias7280004872nk"
+      description: Identificador único del recurso
+
+    fullName:
+      type: string
+      example: "John Doe"
+      description: Nombre completo del usuario
+
+    email:
+      type: string
+      example: "john.doe@example.com"
+      description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
+
+    username:
+      type: string
+      example: "johndoe"
+      description: Nombre de usuario del administrador
+
+    password:
+      type: string
+      example: "Abcd1234_"
+      description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
+
+    passwordHash:
+      type: string
+      example: "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36FjsdY4Z5k6Q5J5Z5J5J5K"
+      description: Contraseña del usuario encriptada
+
+    image:
+      type: string
+      format: binary
+      description: Imagen a subir.
+
+  # REQUEST BODIES
+  requestBodies:
+    # AUTH
+    userLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          $ref: "#/components/bases/email"
+        password:
+          $ref: "#/components/bases/password"
+
+    adminLogin:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          $ref: "#/components/bases/username"
+        password:
+          $ref: "#/components/bases/password"
+
+    # UPDATE_PASSWORD
+    updatePassword:
+      type: object
+      required:
+        - password
+      properties:
+        password:
+          $ref: "#/components/bases/password"
+
+    # USERS
+    userCreate:
+      type: object
+      required:
+        - fullName
+        - email
+        - password
+      properties:
+        fullName:
+          $ref: "#/components/bases/fullName"
+        email:
+          $ref: "#/components/bases/email"
+        password:
+          $ref: "#/components/bases/password"
+
+    userUpdate:
       type: object
       properties:
-        id:
-          type: string
-          example: "jndasl97jnias7280004872nk"
         fullName:
-          type: string
-          example: "John Doe"
+          $ref: "#/components/bases/fullName"
         email:
-          type: string
-          example: "john.doe@example.com"
+          $ref: "#/components/bases/email"
+
+  # SCHEMAS
+  schemas:
+    # USERS
+    user:
+      type: object
+      required:
+        - fullName
+        - email
+        - passwordHash
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        fullName:
+          $ref: "#/components/bases/fullName"
+        email:
+          $ref: "#/components/bases/email"
         passwordHash:
-          type: string
-          example: "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36FjsdY4Z5k6Q5J5Z5J5J5K"
+          $ref: "#/components/bases/passwordHash"
         profileImage:
           type: string
           nullable: true
           example: "https://example.com/images/profile.jpg"
         cart:
           type: object
-          nullable: true
           properties:
             id:
               type: string
@@ -296,6 +617,11 @@ components:
     # ADMINS
     admin:
       type: object
+      required:
+        - fullName
+        - email
+        - username
+        - passwordHash
       properties:
         id:
           type: string
