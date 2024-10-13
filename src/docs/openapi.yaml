@@ -1316,6 +1316,188 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
 
+  # DISCOUNTS
+  /discounts:
+    get:
+      tags:
+        - Discounts
+      summary: Obtener todos los descuentos
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/discount"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Discounts
+      summary: Crear un descuento
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/discount"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: "#/components/schemas/discount"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /discounts/{id}:
+    get:
+      tags:
+        - Discounts
+      summary: Obtener un descuento por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/discount"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Discounts
+      summary: Actualizar un descuento
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/discount"
+      responses:
+        200:
+          $ref: "#/components/responses/discount"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Discounts
+      summary: Eliminar un descuento
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/discount"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /discounts/{id}/activate/:
+    patch:
+      tags:
+        - Discounts
+      summary: Activar un descuento
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/discount"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /discounts/{id}/deactivate:
+    patch:
+      tags:
+        - Discounts
+      summary: Desactivar un descuento
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/discount"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1450,6 +1632,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/material"
+
+    # DISCOUNTS
+    discount:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/discount"
 
   # BASES
   bases:
@@ -1605,6 +1795,21 @@ components:
         description:
           $ref: "#/components/bases/description"
 
+    # DISCOUNTS
+    discount:
+      type: object
+      required:
+        - description
+        - discount
+      properties:
+        description:
+          type: string
+          example: "Descuento del 10% en juguetes"
+        discount:
+          type: number
+          format: float
+          example: 10.0
+
   # SCHEMAS
   schemas:
     # USERS
@@ -1695,6 +1900,14 @@ components:
           $ref: "#/components/bases/name"
         description:
           $ref: "#/components/bases/description"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+              type: string
+              example: "product123"
         createdAt:
           $ref: "#/components/bases/date"
         updatedAt:
@@ -1714,6 +1927,14 @@ components:
           $ref: "#/components/bases/name"
         description:
           $ref: "#/components/bases/description"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+              type: string
+              example: "product123"
         createdAt:
           $ref: "#/components/bases/date"
         updatedAt:
@@ -1733,6 +1954,45 @@ components:
           $ref: "#/components/bases/name"
         description:
           $ref: "#/components/bases/description"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+              type: string
+              example: "product123"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # DISCOUNTS
+    discount:
+      type: object
+      required:
+        - description
+        - discount
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        description:
+          type: string
+          example: "Descuento del 10% en juguetes"
+        discount:
+          type: number
+          format: float
+          example: 10.0
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+              type: string
+              example: "product123"
         createdAt:
           $ref: "#/components/bases/date"
         updatedAt:
