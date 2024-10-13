@@ -1,6 +1,15 @@
 import { Application, Response } from "express";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import path from "path";
+import { fileURLToPath } from "url";
+import YAML from "yamljs";
+
+// Crear __dirname usando import.meta.url
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const swaggerDocument = YAML.load(path.join(__dirname, "../docs/openapi.yaml"));
 
 const options = {
   definition: {
@@ -18,7 +27,7 @@ const options = {
 const specs = swaggerJSDoc(options);
 
 export const swaggerDocs = (app: Application, port: number) => {
-  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
+  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   app.get("/api/docs.json", (_, res: Response) => {
     res.setHeader("Content-Type", "application/json");
     res.send(specs);
