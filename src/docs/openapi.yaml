@@ -369,6 +369,337 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
 
+  # ADMINS
+  /admins:
+    get:
+      tags:
+        - Admins
+      summary: Obtener todos los administradores
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Admins
+      summary: Crear un administrador
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/adminCreate"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}:
+    get:
+      tags:
+        - Admins
+      summary: Obtener un administrador por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Admins
+      summary: Actualizar un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/adminUpdate"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Admins
+      summary: Eliminar un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/email/{email}:
+    get:
+      tags:
+        - Admins
+      summary: Obtener un administrador por correo electrónico
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: Correo electrónico del administrador
+          schema:
+            $ref: "#/components/bases/email"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/username/{username}:
+    get:
+      tags:
+        - Admins
+      summary: Obtener un administrador por nombre de usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: Nombre de usuario del administrador
+          schema:
+            $ref: "#/components/bases/username"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/password:
+    patch:
+      tags:
+        - Admins
+      summary: Actualizar la contraseña de un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/updatePassword"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/image:
+    patch:
+      tags:
+        - Admins
+      summary: Actualizar la imagen de perfil de un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  $ref: "#/components/bases/image"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/delete-image:
+    patch:
+      tags:
+        - Admins
+      summary: Eliminar la imagen de perfil de un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/activate:
+    patch:
+      tags:
+        - Admins
+      summary: Activar un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/deactivate:
+    patch:
+      tags:
+        - Admins
+      summary: Desactivar un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -472,6 +803,14 @@ components:
           schema:
             $ref: "#/components/schemas/user"
 
+    # ADMINS
+    admin:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/admin"
+
   # BASES
   bases:
     id:
@@ -508,6 +847,16 @@ components:
       type: string
       format: binary
       description: Imagen a subir.
+
+    name:
+      type: string
+      example: "Juguetes"
+      description: Nombre del producto, categoría, marca o material
+
+    description:
+      type: string
+      example: "Juguetes para niños"
+      description: Descripción del producto, categoría, marca, material o descuento
 
   # REQUEST BODIES
   requestBodies:
@@ -565,6 +914,34 @@ components:
           $ref: "#/components/bases/fullName"
         email:
           $ref: "#/components/bases/email"
+
+    # ADMINS
+    adminCreate:
+      type: object
+      required:
+        - fullName
+        - email
+        - username
+        - password
+      properties:
+        fullName:
+          $ref: "#/components/bases/fullName"
+        email:
+          $ref: "#/components/bases/email"
+        username:
+          $ref: "#/components/bases/username"
+        password:
+          $ref: "#/components/bases/password"
+
+    adminUpdate:
+      type: object
+      properties:
+        fullName:
+          $ref: "#/components/bases/fullName"
+        email:
+          $ref: "#/components/bases/email"
+        username:
+          $ref: "#/components/bases/username"
 
   # SCHEMAS
   schemas:
