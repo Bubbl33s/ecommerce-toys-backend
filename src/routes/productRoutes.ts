@@ -35,13 +35,13 @@ router.patch(
   ProductController.updateProductStock,
 );
 router.patch(
-  `${PREFIX}/:id/featured`,
+  `${PREFIX}/:id/activate`,
   authenticateToken,
   authorizeRoles(["admin"]),
   ProductController.activateProduct,
 );
 router.patch(
-  `${PREFIX}/:id/unfeatured`,
+  `${PREFIX}/:id/deactivate`,
   authenticateToken,
   authorizeRoles(["admin"]),
   ProductController.deactivateProduct,

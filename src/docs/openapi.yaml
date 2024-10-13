@@ -1490,6 +1490,224 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
 
+  # PRODUCTS
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Obtener todos los productos
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/product"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Products
+      summary: Crear un producto
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/product"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/product"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Obtener un producto por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Products
+      summary: Actualizar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/product"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Products
+      summary: Eliminar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/product"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}/stock:
+    patch:
+      tags:
+        - Products
+      summary: Actualizar el stock de un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stock:
+                  type: number
+                  example: 10
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}/activate:
+    patch:
+      tags:
+        - Products
+      summary: Activar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}/deactivate:
+    patch:
+      tags:
+        - Products
+      summary: Desactivar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1632,6 +1850,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/discount"
+
+    # PRODUCTS
+    product:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/product"
 
   # BASES
   bases:
@@ -1802,6 +2028,38 @@ components:
           format: float
           example: 10.0
 
+    # PRODUCTS
+    product:
+      type: object
+      required:
+        - name
+        - price
+        - stock
+        - categoryId
+        - brandId
+      properties:
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+        price:
+          type: number
+          format: float
+          example: 100.0
+        stock:
+          type: number
+          example: 100
+        categoryId:
+          $ref: "#/components/bases/id"
+        brandId:
+          $ref: "#/components/bases/id"
+        materialId:
+          $ref: "#/components/bases/id"
+          nullable: true
+        discountId:
+          $ref: "#/components/bases/id"
+          nullable: true
+
   # SCHEMAS
   schemas:
     # USERS
@@ -1892,6 +2150,7 @@ components:
           $ref: "#/components/bases/name"
         description:
           $ref: "#/components/bases/description"
+          nullable: true
         products:
           type: array
           items:
@@ -1919,6 +2178,7 @@ components:
           $ref: "#/components/bases/name"
         description:
           $ref: "#/components/bases/description"
+          nullable: true
         products:
           type: array
           items:
@@ -1946,6 +2206,7 @@ components:
           $ref: "#/components/bases/name"
         description:
           $ref: "#/components/bases/description"
+          nullable: true
         products:
           type: array
           items:
@@ -1985,6 +2246,74 @@ components:
               id:
                 type: string
                 example: "product123"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # PRODUCTS
+    product:
+      type: object
+      required:
+        - name
+        - price
+        - stock
+        - category
+        - brand
+        - material
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+          nullable: true
+        price:
+          type: number
+          format: float
+          example: 100.0
+        stock:
+          type: number
+          example: 100
+        category:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            name: "Juguetes"
+            description: "Juguetes para niños"
+        brand:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            name: "Genérica"
+            description: "Marca genérica"
+        material:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            name: "Plástico"
+            description: "Plástico reciclado"
+          nullable: true
+        discount:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            description: "Descuento por nuevo producto"
+            discount: 10.0
+          nullable: true
+        images:
+          type: array
+          items:
+            type: string
+            format: binary
+            example:
+              [
+                "https://example.com/images/product.jpg",
+                "https://example.com/images/product2.jpg",
+              ]
         createdAt:
           $ref: "#/components/bases/date"
         updatedAt:
