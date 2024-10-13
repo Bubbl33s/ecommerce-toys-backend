@@ -1832,6 +1832,161 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
 
+  # CARTS
+  /carts/{id}:
+    get:
+      tags:
+        - Carts
+      summary: Obtener un carrito por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /carts/user/{userId}:
+    get:
+      tags:
+        - Carts
+      summary: Obtener el carrito de un usuario
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /carts/item:
+    post:
+      tags:
+        - Carts
+      summary: Agregar un producto al carrito
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  $ref: "#/components/bases/id"
+                quantity:
+                  type: number
+                  example: 2
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /carts/item/{cartItemId}:
+    patch:
+      tags:
+        - Carts
+      summary: Actualizar la cantidad de un producto en el carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cartItemId
+          in: path
+          required: true
+          description: ID del item del carrito
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  example: 3
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Carts
+      summary: Eliminar un producto del carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cartItemId
+          in: path
+          required: true
+          description: ID del item del carrito
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1998,6 +2153,14 @@ components:
                 example: "https://example.com/image.jpg"
               productId:
                 $ref: "#/components/bases/id"
+
+    # CARTS
+    cart:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/cart"
 
   # BASES
   bases:
@@ -2475,3 +2638,41 @@ components:
           example: "https://example.com/image.jpg"
         productId:
           $ref: "#/components/bases/id"
+
+    # CART
+    cart:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "cart123"
+        user:
+          type: object
+          properties:
+            id:
+              $ref: "#/components/bases/id"
+            fullName:
+              $ref: "#/components/bases/fullName"
+            email:
+              $ref: "#/components/bases/email"
+        products:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: "#/components/schemas/cartItem"
+
+    # CART ITEM
+    cartItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "product123"
+        cartId:
+          $ref: "#/components/bases/id"
+        productId:
+          $ref: "#/components/bases/id"
+        quantity:
+          type: number
+          example: 2
