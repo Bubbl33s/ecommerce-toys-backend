@@ -1114,6 +1114,208 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
 
+  # MATERIALS
+  /materials:
+    get:
+      tags:
+        - Materials
+      summary: Obtener todos los materiales
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/material"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Materials
+      summary: Crear un material
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/productEntity"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: "#/components/schemas/material"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /materials/{id}:
+    get:
+      tags:
+        - Materials
+      summary: Obtener un material por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Materials
+      summary: Actualizar un material
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/productEntity"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Materials
+      summary: Eliminar un material
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/material"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /materials/name/{name}:
+    get:
+      tags:
+        - Materials
+      summary: Obtener un material por nombre
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Nombre del material
+          schema:
+            $ref: "#/components/bases/name"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /materials/{id}/activate:
+    patch:
+      tags:
+        - Materials
+      summary: Activar un material
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /materials/{id}/deactivate:
+    patch:
+      tags:
+        - Materials
+      summary: Desactivar un material
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1240,6 +1442,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/brand"
+
+    # MATERIALS
+    material:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/material"
 
   # BASES
   bases:
@@ -1494,6 +1704,25 @@ components:
 
     # BRANDS
     brand:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # MATERIALS
+    material:
       type: object
       required:
         - name
