@@ -2136,7 +2136,33 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/product"
+            id:
+              $ref: "#/components/bases/id"
+            name:
+              $ref: "#/components/bases/name"
+            description:
+              $ref: "#/components/bases/description"
+            price:
+              type: number
+              format: float
+              example: 100.0
+            stock:
+              type: number
+              example: 10
+            categoryId:
+              $ref: "#/components/bases/id"
+            brandId:
+              $ref: "#/components/bases/id"
+            materialId:
+              $ref: "#/components/bases/id"
+            discountId:
+              $ref: "#/components/bases/id"
+            createdAt:
+              $ref: "#/components/bases/date"
+            updatedAt:
+              $ref: "#/components/bases/date"
+            isDeleted:
+              $ref: "#/components/bases/isDeleted"
 
     # IMAGES
     image:
