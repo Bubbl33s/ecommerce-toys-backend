@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "start": "node dist/index.js",
-    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
+    "build": "tsc && npm run copy-docs",
+    "copy-docs": "cp -r src/docs dist/docs",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'tsx' src/index.ts",
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "eslint --fix",
