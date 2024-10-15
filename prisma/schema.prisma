@@ -134,7 +134,7 @@ model OrderItem {
   productId String
   quantity  Int
   lockedPrice Float
-  totalAmount Decimal
+  totalAmount Float
 }
 
 model Admin {
