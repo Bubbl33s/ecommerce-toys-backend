@@ -1,9 +1,9 @@
 import app from "./app";
 import { swaggerDocs } from "./config/swagger";
 
-const port = 3000;
+const PORT = process.env.PORT ?? "9090";
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-  swaggerDocs(app, port);
+app.listen(PORT, () => {
+  console.log(`Server running in port ${PORT}`);
+  swaggerDocs(app, parseInt(PORT));
 });
