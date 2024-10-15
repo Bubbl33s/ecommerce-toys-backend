@@ -30,4 +30,7 @@ export const swaggerDocs = (app: Application, port: number) => {
   });
 
   console.log(`Swagger docs available at http://localhost:${port}/api/docs`);
+  console.log(
+    `Swagger docs available at https://ecommerce-toys-backend.onrender.com/api/docs`,
+  );
 };
