@@ -9,6 +9,7 @@ import { createAdminValidator, updateAdminValidator } from "./adminValidations";
 import { discountValidator } from "./discountValidations";
 import { productValidator } from "./productValidations";
 import { addItemCartValidator } from "./cartValidations";
+import { orderStatusValidator } from "./orderValidations";
 
 export {
   emailValidator,
@@ -22,4 +23,5 @@ export {
   productValidator,
   quantityValidator,
   addItemCartValidator,
+  orderStatusValidator,
 };
