@@ -7,6 +7,8 @@ info:
 servers:
   - url: http://localhost:9090/api
     description: Servidor de desarrollo
+  - url: https://ecommerce-toys-backend.onrender.com/api
+    description: Servidor de producción
 
 tags:
   - name: Auth
