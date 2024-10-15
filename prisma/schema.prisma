@@ -14,16 +14,18 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid()) @unique
-  fullName     String   @db.VarChar(100)
-  email        String   @unique @db.VarChar(50)
-  passwordHash String
-  profileImage  String?
-  cart         Cart?
-  orders       Order[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  isDeleted    Boolean  @default(false)
+  id               String   @id @default(cuid()) @unique
+  fullName         String   @db.VarChar(100)
+  email            String   @unique @db.VarChar(50)
+  passwordHash     String
+  profileImage      String?
+  cart             Cart?
+  orders           Order[]
+  isVerified        Boolean  @default(false)
+  verificationToken String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  isDeleted        Boolean  @default(false)
 }
 
 model Cart {
@@ -132,7 +134,7 @@ model OrderItem {
   productId String
   quantity  Int
   lockedPrice Float
-  totalAmount Decimal
+  totalAmount Float
 }
 
 model Admin {
