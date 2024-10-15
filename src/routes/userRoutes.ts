@@ -25,6 +25,7 @@ router.get(
   authorizeRoles(["admin", "user"]),
   UserController.getUserByEmail,
 );
+router.get(`${PREFIX}/verify/:token`, UserController.verifyAccount);
 router.post(PREFIX, createUserValidator, validate, UserController.createUser);
 router.put(
   `${PREFIX}/:id`,

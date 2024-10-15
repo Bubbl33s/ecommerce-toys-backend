@@ -66,6 +66,17 @@ export class UserController {
     }
   }
 
+  static async verifyAccount(req: Request, res: Response, next: NextFunction) {
+    const { token } = req.params;
+
+    try {
+      const user = await UserService.verifyAccount(token);
+      res.json({ message: `Cuenta verificada, usuario ${user.id}` });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async updatePassword(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const { password } = req.body;

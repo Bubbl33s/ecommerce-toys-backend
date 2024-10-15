@@ -1,5 +1,9 @@
 import prisma from "./prisma";
-import { hashPassword } from "../utilities";
+import {
+  hashPassword,
+  generateVerificationToken,
+  sendAccountConfirmationEmail,
+} from "../utilities";
 import path from "path";
 import { promises as fs } from "fs";
 
@@ -54,6 +58,7 @@ export class UserService {
             fullName,
             email,
             passwordHash: hashedPassword,
+            verificationToken: generateVerificationToken(),
           },
         });
 
@@ -63,6 +68,16 @@ export class UserService {
             userId: user.id,
           },
         });
+
+        // Enviar correo de verificación
+        if (user.verificationToken) {
+          await sendAccountConfirmationEmail(
+            user.email,
+            user.verificationToken,
+          );
+        } else {
+          throw new Error("Verification token is null");
+        }
 
         return user;
       });
@@ -87,6 +102,24 @@ export class UserService {
     return prisma.user.update({
       where: { id },
       data: { fullName, email },
+    });
+  }
+
+  static async verifyAccount(token: string) {
+    const user = await prisma.user.findFirst({
+      where: { verificationToken: token },
+    });
+
+    if (!user) {
+      throw new Error("Token de verificación inválido");
+    }
+
+    return prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isVerified: true,
+        verificationToken: null,
+      },
     });
   }
 
