@@ -63,21 +63,37 @@ export class OrderService {
               where: { id: item.productId },
             });
 
+            let discountValue = 0;
+
             if (!product) {
               throw new Error("No se encontró el producto");
+            } else {
+              if (product.discountId) {
+                const discount = await prismaTx.discount.findUnique({
+                  where: { id: product.discountId },
+                });
+
+                if (!discount) {
+                  throw new Error("No se encontró el descuento");
+                }
+
+                discountValue = discount.discount;
+              }
             }
+
+            const lockedPrice = product.price * (1 - discountValue);
 
             await prismaTx.orderItem.create({
               data: {
                 orderId: order.id,
                 productId: product.id,
                 quantity: item.quantity,
-                lockedPrice: product.price,
-                totalAmount: product.price * item.quantity,
+                lockedPrice,
+                totalAmount: lockedPrice * item.quantity,
               },
             });
 
-            totalOrderAmount += product.price * item.quantity;
+            totalOrderAmount += lockedPrice * item.quantity;
           }),
         );
 

@@ -26,7 +26,7 @@ router.get(
   OrderController.getOrdersByUserId,
 );
 router.post(
-  "/",
+  "/user/:userId",
   authenticateToken,
   authorizeRoles(["admin", "user"]),
   OrderController.createOrderFromUserCart,
