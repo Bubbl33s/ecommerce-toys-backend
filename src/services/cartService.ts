@@ -74,4 +74,16 @@ export class CartService {
       where: { id: cartItemId },
     });
   }
+
+  static async clearUserCart(userId: string) {
+    const cart = await this.getCartByUserId(userId);
+
+    if (!cart) {
+      throw new Error("No existe un carrito para ese usuario");
+    }
+
+    return prisma.cartItem.deleteMany({
+      where: { cartId: cart.id },
+    });
+  }
 }
