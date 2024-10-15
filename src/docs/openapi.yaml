@@ -1,0 +1,2922 @@
+openapi: 3.0.0
+info:
+  title: E-commerce Toys API
+  description: "API de E-commerce de Juguetes para el Bootcamp TOP Full Stack de Make it Real. Tecnologías utilizadas: Node.js, TypeScript, Express, PostgreSQL, Prisma, JWT, Swagger. Desarrollado por: Valeria Lozano."
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:9090/api
+    description: Servidor de desarrollo
+
+tags:
+  - name: Auth
+    description: Operaciones relacionadas con la autenticación de usuarios
+  - name: Users
+    description: Operaciones relacionadas con los usuarios
+  - name: Admins
+    description: Operaciones relacionadas con los administradores
+  - name: Categories
+    description: Operaciones relacionadas con las categorías
+  - name: Brands
+    description: Operaciones relacionadas con las marcas
+  - name: Materials
+    description: Operaciones relacionadas con los materiales
+  - name: Discounts
+    description: Operaciones relacionadas con los descuentos
+  - name: Products
+    description: Operaciones relacionadas con los productos
+  - name: Images
+    description: Operaciones relacionadas con las imágenes de los productos
+  - name: Carts
+    description: Operaciones relacionadas con los carritos de compra
+
+paths:
+  # AUTH
+  /users/login:
+    post:
+      tags:
+        - Auth
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/userLogin"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/userLogin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/login:
+    post:
+      tags:
+        - Auth
+      summary: Iniciar sesión como administrador
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/adminLogin"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/adminLogin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # USERS
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Obtener todos los usuarios
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/user"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Users
+      summary: Crear un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/userCreate"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Obtener un usuario por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Users
+      summary: Actualizar un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/userUpdate"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Users
+      summary: Eliminar un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/email/{email}:
+    get:
+      tags:
+        - Users
+      summary: Obtener un usuario por correo electrónico
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: Correo electrónico del usuario
+          schema:
+            $ref: "#/components/bases/email"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/password/{id}:
+    patch:
+      tags:
+        - Users
+      summary: Actualizar la contraseña de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/updatePassword"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}/image:
+    patch:
+      tags:
+        - Users
+      summary: Actualizar la imagen de perfil de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  $ref: "#/components/bases/image"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}/delete-image:
+    patch:
+      tags:
+        - Users
+      summary: Eliminar la imagen de perfil de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}/activate:
+    patch:
+      tags:
+        - Users
+      summary: Activar un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /users/{id}/deactivate:
+    patch:
+      tags:
+        - Users
+      summary: Desactivar un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/user"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # ADMINS
+  /admins:
+    get:
+      tags:
+        - Admins
+      summary: Obtener todos los administradores
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Admins
+      summary: Crear un administrador
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/adminCreate"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/admin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}:
+    get:
+      tags:
+        - Admins
+      summary: Obtener un administrador por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Admins
+      summary: Actualizar un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/adminUpdate"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Admins
+      summary: Eliminar un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/email/{email}:
+    get:
+      tags:
+        - Admins
+      summary: Obtener un administrador por correo electrónico
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: Correo electrónico del administrador
+          schema:
+            $ref: "#/components/bases/email"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/username/{username}:
+    get:
+      tags:
+        - Admins
+      summary: Obtener un administrador por nombre de usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: Nombre de usuario del administrador
+          schema:
+            $ref: "#/components/bases/username"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/password:
+    patch:
+      tags:
+        - Admins
+      summary: Actualizar la contraseña de un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/updatePassword"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/image:
+    patch:
+      tags:
+        - Admins
+      summary: Actualizar la imagen de perfil de un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  $ref: "#/components/bases/image"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/delete-image:
+    patch:
+      tags:
+        - Admins
+      summary: Eliminar la imagen de perfil de un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/activate:
+    patch:
+      tags:
+        - Admins
+      summary: Activar un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /admins/{id}/deactivate:
+    patch:
+      tags:
+        - Admins
+      summary: Desactivar un administrador
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del administrador
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/admin"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # CATEGORIES
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Obtener todas las categorías
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/category"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Categories
+      summary: Crear una categoría
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/productEntity"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/category"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /categories/{id}:
+    get:
+      tags:
+        - Categories
+      summary: Obtener una categoría por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la categoría
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/category"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Categories
+      summary: Actualizar una categoría
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la categoría
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/productEntity"
+      responses:
+        200:
+          $ref: "#/components/responses/category"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Categories
+      summary: Eliminar una categoría
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la categoría
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/category"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /categories/name/{name}:
+    get:
+      tags:
+        - Categories
+      summary: Obtener una categoría por nombre
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Nombre de la categoría
+          schema:
+            $ref: "#/components/bases/name"
+      responses:
+        200:
+          $ref: "#/components/responses/category"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /categories/{id}/activate:
+    patch:
+      tags:
+        - Categories
+      summary: Activar una categoría
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la categoría
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/category"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /categories/{id}/deactivate:
+    patch:
+      tags:
+        - Categories
+      summary: Desactivar una categoría
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la categoría
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/category"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # BRANDS
+  /brands:
+    get:
+      tags:
+        - Brands
+      summary: Obtener todas las marcas
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/brand"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Brands
+      summary: Crear una marca
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/productEntity"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/brand"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /brands/{id}:
+    get:
+      tags:
+        - Brands
+      summary: Obtener una marca por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la marca
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/brand"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Brands
+      summary: Actualizar una marca
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la marca
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/productEntity"
+      responses:
+        200:
+          $ref: "#/components/responses/brand"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Brands
+      summary: Eliminar una marca
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la marca
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/brand"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /brands/name/{name}:
+    get:
+      tags:
+        - Brands
+      summary: Obtener una marca por nombre
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Nombre de la marca
+          schema:
+            $ref: "#/components/bases/name"
+      responses:
+        200:
+          $ref: "#/components/responses/brand"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /brands/{id}/activate:
+    patch:
+      tags:
+        - Brands
+      summary: Activar una marca
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la marca
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/brand"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /brands/{id}/deactivate:
+    patch:
+      tags:
+        - Brands
+      summary: Desactivar una marca
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la marca
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/brand"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # MATERIALS
+  /materials:
+    get:
+      tags:
+        - Materials
+      summary: Obtener todos los materiales
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/material"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Materials
+      summary: Crear un material
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/productEntity"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/material"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /materials/{id}:
+    get:
+      tags:
+        - Materials
+      summary: Obtener un material por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Materials
+      summary: Actualizar un material
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/productEntity"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Materials
+      summary: Eliminar un material
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/material"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /materials/name/{name}:
+    get:
+      tags:
+        - Materials
+      summary: Obtener un material por nombre
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Nombre del material
+          schema:
+            $ref: "#/components/bases/name"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /materials/{id}/activate:
+    patch:
+      tags:
+        - Materials
+      summary: Activar un material
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /materials/{id}/deactivate:
+    patch:
+      tags:
+        - Materials
+      summary: Desactivar un material
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del material
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/material"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # DISCOUNTS
+  /discounts:
+    get:
+      tags:
+        - Discounts
+      summary: Obtener todos los descuentos
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/discount"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Discounts
+      summary: Crear un descuento
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/discount"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/discount"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /discounts/{id}:
+    get:
+      tags:
+        - Discounts
+      summary: Obtener un descuento por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/discount"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Discounts
+      summary: Actualizar un descuento
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/discount"
+      responses:
+        200:
+          $ref: "#/components/responses/discount"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Discounts
+      summary: Eliminar un descuento
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/discount"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /discounts/{id}/activate/:
+    patch:
+      tags:
+        - Discounts
+      summary: Activar un descuento
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/discount"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /discounts/{id}/deactivate:
+    patch:
+      tags:
+        - Discounts
+      summary: Desactivar un descuento
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del descuento
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/discount"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # PRODUCTS
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Obtener todos los productos
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/product"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Products
+      summary: Crear un producto
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/product"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/product"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Obtener un producto por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Products
+      summary: Actualizar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/product"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Products
+      summary: Eliminar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/product"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}/stock:
+    patch:
+      tags:
+        - Products
+      summary: Actualizar el stock de un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stock:
+                  type: number
+                  example: 10
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}/activate:
+    patch:
+      tags:
+        - Products
+      summary: Activar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /products/{id}/deactivate:
+    patch:
+      tags:
+        - Products
+      summary: Desactivar un producto
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/product"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # IMAGES
+  /images:
+    get:
+      tags:
+        - Images
+      summary: Obtener todas las imágenes
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/image"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Images
+      summary: Subir una imagen
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  $ref: "#/components/bases/image"
+                productId:
+                  $ref: "#/components/bases/id"
+      responses:
+        201:
+          $ref: "#/components/responses/image"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /images/{id}:
+    get:
+      tags:
+        - Images
+      summary: Obtener una imagen por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la imagen
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          $ref: "#/components/responses/image"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Images
+      summary: Eliminar una imagen
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la imagen
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/image"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /images/product/{productId}:
+    get:
+      tags:
+        - Images
+      summary: Obtener todas las imágenes de un producto
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/image"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # CARTS
+  /carts/{id}:
+    get:
+      tags:
+        - Carts
+      summary: Obtener un carrito por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /carts/user/{userId}:
+    get:
+      tags:
+        - Carts
+      summary: Obtener el carrito de un usuario
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /carts/item:
+    post:
+      tags:
+        - Carts
+      summary: Agregar un producto al carrito
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  $ref: "#/components/bases/id"
+                quantity:
+                  type: number
+                  example: 2
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /carts/item/{cartItemId}:
+    patch:
+      tags:
+        - Carts
+      summary: Actualizar la cantidad de un producto en el carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cartItemId
+          in: path
+          required: true
+          description: ID del item del carrito
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  example: 3
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Carts
+      summary: Eliminar un producto del carrito
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cartItemId
+          in: path
+          required: true
+          description: ID del item del carrito
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/cart"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  # ORDERS
+  /orders:
+    get:
+      tags:
+        - Orders
+      summary: Obtener todas las órdenes
+      sewcurity:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/order"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /orders/{id}:
+    get:
+      tags:
+        - Orders
+      summary: Obtener una orden por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la orden
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/order"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    patch:
+      tags:
+        - Orders
+      summary: Actualizar el estado de una orden
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la orden
+          schema:
+            $ref: "#/components/bases/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: "Enviado"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/order"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+  /orders/user/{id}:
+    get:
+      tags:
+        - Orders
+      summary: Obtener todas las órdenes de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/order"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Orders
+      summary: Crear una orden desde el carrito de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            $ref: "#/components/bases/id"
+      responses:
+        201:
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/order"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Token JWT para autenticación. Los usuarios autenticados pueden tener uno de los siguientes roles: "admin", "user".'
+
+  # RESPONSES
+  responses:
+    # GENERAL
+    BadRequest:
+      description: Datos no válidos. La solicitud no se puede procesar debido a errores de cliente.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Datos no válidos. Asegúrate de que todos los campos requeridos estén presentes y sean correctos."
+              validationErrors:
+                type: array
+                items:
+                  type: string
+                example:
+                  [
+                    "El campo 'nombre' es requerido.",
+                    "La dirección de correo electrónico no es válida.",
+                    "Ya existe un usuario con el correo electrónico",
+                  ]
+
+    Unauthorized:
+      description: No autenticado. Se requiere un token válido.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "No autenticado. Se requiere un token válido."
+
+    Forbidden:
+      description: No tienes permisos para acceder a este recurso.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Acceso prohibido. No tienes los permisos necesarios."
+
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "No se encontró el recurso solicitado"
+
+    InternalServerError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Error interno del servidor"
+
+    # AUTH
+    userLogin:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/user"
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjIwZjQwZjIwZjIwZjIwZjIwZjIwZjIiLCJyb2xlIjoidXNlciIsImlhdCI6MTYzMDIwNjQwMCwiZXhwIjoxNjMwMjA2NDAwfQ.7"
+
+    adminLogin:
+      type: object
+      properties:
+        admin:
+          $ref: "#/components/schemas/admin"
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjIwZjQwZjIwZjIwZjIwZjIwZjIwZjIiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2MzAyMDY0MDAsImV4cCI6MTYzMDIwNjQwMH0.7"
+
+    # USERS
+    user:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/user"
+
+    # ADMINS
+    admin:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/admin"
+
+    # CATEGORIES
+    category:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/category"
+
+    # BRANDS
+    brand:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/brand"
+
+    # MATERIALS
+    material:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/material"
+
+    # DISCOUNTS
+    discount:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/discount"
+
+    # PRODUCTS
+    product:
+      description: OK
+      content:
+        application/json:
+          schema:
+            id:
+              $ref: "#/components/bases/id"
+            name:
+              $ref: "#/components/bases/name"
+            description:
+              $ref: "#/components/bases/description"
+            price:
+              type: number
+              format: float
+              example: 100.0
+            stock:
+              type: number
+              example: 10
+            categoryId:
+              $ref: "#/components/bases/id"
+            brandId:
+              $ref: "#/components/bases/id"
+            materialId:
+              $ref: "#/components/bases/id"
+            discountId:
+              $ref: "#/components/bases/id"
+            createdAt:
+              $ref: "#/components/bases/date"
+            updatedAt:
+              $ref: "#/components/bases/date"
+            isDeleted:
+              $ref: "#/components/bases/isDeleted"
+
+    # IMAGES
+    image:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: "#/components/bases/id"
+              url:
+                type: string
+                example: "https://example.com/image.jpg"
+              productId:
+                $ref: "#/components/bases/id"
+
+    # CARTS
+    cart:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/cart"
+
+    # ORDERS
+    order:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/order"
+
+  # BASES
+  bases:
+    id:
+      type: string
+      example: "jndasl97jnias7280004872nk"
+      description: Identificador único del recurso
+
+    fullName:
+      type: string
+      example: "John Doe"
+      description: Nombre completo del usuario
+
+    email:
+      type: string
+      example: "john.doe@example.com"
+      description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
+
+    username:
+      type: string
+      example: "johndoe"
+      description: Nombre de usuario del administrador
+
+    password:
+      type: string
+      example: "Abcd1234_"
+      description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
+
+    passwordHash:
+      type: string
+      example: "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36FjsdY4Z5k6Q5J5Z5J5J5K"
+      description: Contraseña del usuario encriptada
+
+    image:
+      type: string
+      format: binary
+      description: Imagen a subir.
+
+    name:
+      type: string
+      example: "Juguetes"
+      description: Nombre del producto, categoría, marca o material
+
+    description:
+      type: string
+      example: "Juguetes para niños"
+      description: Descripción del producto, categoría, marca, material o descuento
+
+    date:
+      type: string
+      format: date-time
+      example: "2021-09-01T00:00:00.000Z"
+      description: Fecha y hora en formato ISO 8601
+
+    isDeleted:
+      type: boolean
+      example: false
+      description: Indica si el recurso ha sido eliminado
+
+  # REQUEST BODIES
+  requestBodies:
+    # AUTH
+    userLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          $ref: "#/components/bases/email"
+        password:
+          $ref: "#/components/bases/password"
+
+    adminLogin:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          $ref: "#/components/bases/username"
+        password:
+          $ref: "#/components/bases/password"
+
+    # UPDATE_PASSWORD
+    updatePassword:
+      type: object
+      required:
+        - password
+      properties:
+        password:
+          $ref: "#/components/bases/password"
+
+    # USERS
+    userCreate:
+      type: object
+      required:
+        - fullName
+        - email
+        - password
+      properties:
+        fullName:
+          $ref: "#/components/bases/fullName"
+        email:
+          $ref: "#/components/bases/email"
+        password:
+          $ref: "#/components/bases/password"
+
+    userUpdate:
+      type: object
+      properties:
+        fullName:
+          $ref: "#/components/bases/fullName"
+        email:
+          $ref: "#/components/bases/email"
+
+    # ADMINS
+    adminCreate:
+      type: object
+      required:
+        - fullName
+        - email
+        - username
+        - password
+      properties:
+        fullName:
+          $ref: "#/components/bases/fullName"
+        email:
+          $ref: "#/components/bases/email"
+        username:
+          $ref: "#/components/bases/username"
+        password:
+          $ref: "#/components/bases/password"
+
+    adminUpdate:
+      type: object
+      properties:
+        fullName:
+          $ref: "#/components/bases/fullName"
+        email:
+          $ref: "#/components/bases/email"
+        username:
+          $ref: "#/components/bases/username"
+
+    # PRODUCTS ENTITIES
+    productEntity:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+
+    # DISCOUNTS
+    discount:
+      type: object
+      required:
+        - description
+        - discount
+      properties:
+        description:
+          type: string
+          example: "Descuento del 10% en juguetes"
+        discount:
+          type: number
+          format: float
+          example: 10.0
+
+    # PRODUCTS
+    product:
+      type: object
+      required:
+        - name
+        - price
+        - stock
+        - categoryId
+        - brandId
+      properties:
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+        price:
+          type: number
+          format: float
+          example: 100.0
+        stock:
+          type: number
+          example: 100
+        categoryId:
+          $ref: "#/components/bases/id"
+        brandId:
+          $ref: "#/components/bases/id"
+        materialId:
+          $ref: "#/components/bases/id"
+          nullable: true
+        discountId:
+          $ref: "#/components/bases/id"
+          nullable: true
+
+  # SCHEMAS
+  schemas:
+    # USERS
+    user:
+      type: object
+      required:
+        - fullName
+        - email
+        - passwordHash
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        fullName:
+          $ref: "#/components/bases/fullName"
+        email:
+          $ref: "#/components/bases/email"
+        passwordHash:
+          $ref: "#/components/bases/passwordHash"
+        profileImage:
+          type: string
+          nullable: true
+          example: "https://example.com/images/profile.jpg"
+        cart:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "cart123"
+        orders:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "order123"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # ADMINS
+    admin:
+      type: object
+      required:
+        - fullName
+        - email
+        - username
+        - passwordHash
+      properties:
+        id:
+          type: string
+          example: "jndasl97jnias7280004872nk"
+        fullName:
+          type: string
+          example: "Jane Doe"
+        email:
+          type: string
+          example: "jane.doe@example.com"
+        username:
+          type: string
+          example: "janedoe"
+        passwordHash:
+          type: string
+          example: "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36FjsdY4Z5k6Q5J5Z5J5J5"
+        profileImage:
+          type: string
+          nullable: true
+          example: "https://example.com/images/profile.jpg"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # CATEGORIES
+    category:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+          nullable: true
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "product123"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # BRANDS
+    brand:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+          nullable: true
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "product123"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # MATERIALS
+    material:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+          nullable: true
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "product123"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # DISCOUNTS
+    discount:
+      type: object
+      required:
+        - description
+        - discount
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        description:
+          type: string
+          example: "Descuento del 10% en juguetes"
+        discount:
+          type: number
+          format: float
+          example: 10.0
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "product123"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # PRODUCTS
+    product:
+      type: object
+      required:
+        - name
+        - price
+        - stock
+        - category
+        - brand
+        - material
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        name:
+          $ref: "#/components/bases/name"
+        description:
+          $ref: "#/components/bases/description"
+          nullable: true
+        price:
+          type: number
+          format: float
+          example: 100.0
+        stock:
+          type: number
+          example: 100
+        category:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            name: "Juguetes"
+            description: "Juguetes para niños"
+        brand:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            name: "Genérica"
+            description: "Marca genérica"
+        material:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            name: "Plástico"
+            description: "Plástico reciclado"
+          nullable: true
+        discount:
+          type: object
+          example:
+            id: "jndasl97jnias7280004872nk"
+            description: "Descuento por nuevo producto"
+            discount: 10.0
+          nullable: true
+        images:
+          type: array
+          items:
+            type: string
+            format: binary
+            example:
+              [
+                "https://example.com/images/product.jpg",
+                "https://example.com/images/product2.jpg",
+              ]
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # IMAGES
+    image:
+      type: object
+      required:
+        - url
+        - productId
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        url:
+          type: string
+          example: "https://example.com/image.jpg"
+        productId:
+          $ref: "#/components/bases/id"
+
+    # CART
+    cart:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "cart123"
+        user:
+          type: object
+          properties:
+            id:
+              $ref: "#/components/bases/id"
+            fullName:
+              $ref: "#/components/bases/fullName"
+            email:
+              $ref: "#/components/bases/email"
+        products:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: "#/components/schemas/cartItem"
+
+    # CART ITEM
+    cartItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "product123"
+        cartId:
+          $ref: "#/components/bases/id"
+        productId:
+          $ref: "#/components/bases/id"
+        quantity:
+          type: number
+          example: 2
+
+    # ORDER
+    order:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/bases/id"
+        user:
+          type: object
+          properties:
+            id:
+              $ref: "#/components/bases/id"
+            fullName:
+              $ref: "#/components/bases/fullName"
+            email:
+              $ref: "#/components/bases/email"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/orderItem"
+        totalAmount:
+          type: number
+          format: float
+          example: 200.0
+        status:
+          type: string
+          example: "Pendiente"
+        createdAt:
+          $ref: "#/components/bases/date"
+        updatedAt:
+          $ref: "#/components/bases/date"
+        isDeleted:
+          $ref: "#/components/bases/isDeleted"
+
+    # ORDER ITEM
+    orderItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "product123"
+        orderId:
+          $ref: "#/components/bases/id"
+        productId:
+          $ref: "#/components/bases/id"
+        quantity:
+          type: number
+          example: 2
+        lockedPrice:
+          type: number
+          format: float
+          example: 100.0
+        totalAmount:
+          type: number
+          format: float
+          example: 200.0
