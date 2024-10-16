@@ -28,7 +28,12 @@ export class PaymentController {
         return;
       }
 
-      await PaymentService.handleWebhook(paymentId);
+      const payment = await PaymentService.handleWebhook(paymentId);
+
+      // Si sale bien se obtiene el userId y se crea la orden
+      const userId = payment.external_reference;
+
+      await OrderService.createOrderFromUserCart(userId);
 
       res.json({ message: "Orden creada" });
     } catch (error) {

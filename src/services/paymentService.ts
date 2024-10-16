@@ -1,4 +1,4 @@
-import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
+import { MercadoPagoConfig, Preference } from "mercadopago";
 import { CartService } from "./cartService";
 import prisma from "./prisma";
 import axios from "axios";
@@ -19,7 +19,6 @@ export class PaymentService {
   }
 
   static async createPaymentFromUserCart(userId: string) {
-    /*
     const userCart = await CartService.getCartByUserId(userId);
 
     if (!userCart) {
@@ -67,7 +66,7 @@ export class PaymentService {
         };
       }),
     );
-*/
+
     try {
       const preference = await PaymentService.preference.create({
         body: {
@@ -76,26 +75,10 @@ export class PaymentService {
             excluded_payment_types: [],
             installments: 6,
           },
-          items: [
-            {
-              id: "1234",
-              title: "Nombre del producto 1",
-              category_id: "34",
-              quantity: 1,
-              currency_id: "PEN",
-              unit_price: 75.76,
-            },
-            {
-              id: "12345",
-              title: "Nombre del producto 2",
-              category_id: "12",
-              quantity: 1,
-              currency_id: "PEN",
-              unit_price: 16.48,
-            },
-          ],
+          items,
           auto_return: "approved",
           back_urls: {
+            // Cambiar con la url de deploy del frontend
             success: `${process.env.DEPLOY_URL}api/payment/success/`,
             // failure: `${process.env.DEPLOY_URL}api/payment/failure`,
           },
@@ -103,7 +86,7 @@ export class PaymentService {
             name: userId,
           },
           // External_reference con el userId
-          external_reference: `userid-${userId}`,
+          external_reference: userId,
         },
       });
 
@@ -114,9 +97,6 @@ export class PaymentService {
   }
 
   static async handleWebhook(paymentId: string) {
-    // Handle
-    console.log(paymentId);
-
     const MERCADO_PAGO_API_URL = "https://api.mercadopago.com/v1/payments";
 
     try {
@@ -126,9 +106,7 @@ export class PaymentService {
         },
       });
 
-      const data = response.data;
-
-      console.log(data);
+      return response.data;
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);
