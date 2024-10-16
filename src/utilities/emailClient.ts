@@ -24,7 +24,7 @@ export const sendAccountConfirmationEmail = async (
   token: string,
 ) => {
   // Cambiar la URL de producción
-  const verificationUrl = `${process.env.DEPLOY_URL}/api/users/verify/${token}`;
+  const verificationUrl = `${process.env.DEPLOY_URL}api/users/verify/${token}`;
 
   const subject = "Confirma tu cuenta";
   const html = `
