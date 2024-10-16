@@ -231,12 +231,12 @@ export class UserService {
 
     try {
       return prisma.$transaction(async (prismaTx) => {
-        const user = await prismaTx.user.delete({
-          where: { id },
+        await prismaTx.cart.delete({
+          where: { userId: id },
         });
 
-        await prismaTx.cart.delete({
-          where: { userId: user.id },
+        const user = await prismaTx.user.delete({
+          where: { id },
         });
 
         return user;
