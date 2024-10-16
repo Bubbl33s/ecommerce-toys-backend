@@ -1,4 +1,4 @@
-import { MercadoPagoConfig, Preference } from "mercadopago";
+import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
 import { CartService } from "./cartService";
 import prisma from "./prisma";
 
@@ -95,15 +95,27 @@ export class PaymentService {
           ],
           auto_return: "approved",
           back_urls: {
-            success: `${process.env.DEPLOY_URL}api/payment/success/${userId}`,
-            failure: `${process.env.DEPLOY_URL}api/payment/failure`,
+            success: `${process.env.DEPLOY_URL}api/payment/success/`,
+            // failure: `${process.env.DEPLOY_URL}api/payment/failure`,
           },
+          payer: {
+            name: userId,
+          },
+          // External_reference con el userId
+          external_reference: `userid-${userId}`,
         },
       });
+
+      console.log(`Preference created:\n${JSON.stringify(preference)}`);
 
       return preference.init_point;
     } catch (error) {
       throw new Error("Error al crear la preferencia de pago");
     }
+  }
+
+  static async handleWebhook(paymentId: string) {
+    // Handle
+    console.log(payment);
   }
 }

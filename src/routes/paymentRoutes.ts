@@ -2,10 +2,8 @@ import { Router } from "express";
 import { PaymentController } from "../controllers/paymentController";
 
 const router = Router();
-const PREFIX = "/payment";
 
-router.post(`${PREFIX}/:id`, PaymentController.createPaymentFromUserCart);
-router.get(`${PREFIX}/success/:id`, PaymentController.paymentSuccess);
-router.get(`${PREFIX}/failure`, PaymentController.paymentFailure);
+router.post(`/payment/:id`, PaymentController.createPaymentFromUserCart);
+router.post(`/payment-webhook`, PaymentController.handleWebhook);
 
 export default router;

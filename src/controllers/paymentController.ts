@@ -19,21 +19,18 @@ export class PaymentController {
     }
   }
 
-  static async paymentSuccess(req: Request, res: Response, next: NextFunction) {
+  static async handleWebhook(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const paymentId = req.query["data.id"] as string;
 
-      await OrderService.createOrderFromUserCart(id);
+      if (!paymentId) {
+        res.status(400).json({ message: "Payment ID not found" });
+        return;
+      }
 
-      res.json({ message: "Pago exitoso, orden creada" });
-    } catch (error) {
-      next(error);
-    }
-  }
+      await PaymentService.handleWebhook(paymentId);
 
-  static async paymentFailure(_: Request, res: Response, next: NextFunction) {
-    try {
-      res.json({ message: "Pago fallido" });
+      res.json({ message: "Orden creada" });
     } catch (error) {
       next(error);
     }
