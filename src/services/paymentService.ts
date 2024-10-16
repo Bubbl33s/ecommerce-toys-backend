@@ -1,6 +1,7 @@
 import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
 import { CartService } from "./cartService";
 import prisma from "./prisma";
+import axios from "axios";
 
 export class PaymentService {
   private static API_KEY = process.env.MERCADOPAGO_API_KEY;
@@ -106,8 +107,6 @@ export class PaymentService {
         },
       });
 
-      console.log(`Preference created:\n${JSON.stringify(preference)}`);
-
       return preference.init_point;
     } catch (error) {
       throw new Error("Error al crear la preferencia de pago");
@@ -116,6 +115,26 @@ export class PaymentService {
 
   static async handleWebhook(paymentId: string) {
     // Handle
-    console.log(payment);
+    console.log(paymentId);
+
+    const MERCADO_PAGO_API_URL = "https://api.mercadopago.com/v1/payments";
+
+    try {
+      const response = await axios.get(`${MERCADO_PAGO_API_URL}/${paymentId}`, {
+        headers: {
+          Authorization: `Bearer ${PaymentService.API_KEY}`,
+        },
+      });
+
+      const data = response.data;
+
+      console.log(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("An unknown error occurred");
+      }
+    }
   }
 }
