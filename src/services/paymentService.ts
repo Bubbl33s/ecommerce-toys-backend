@@ -18,6 +18,7 @@ export class PaymentService {
   }
 
   static async createPaymentFromUserCart(userId: string) {
+    /*
     const userCart = await CartService.getCartByUserId(userId);
 
     if (!userCart) {
@@ -58,13 +59,14 @@ export class PaymentService {
         return {
           id: product.id,
           title: product.name,
+          category_id: product.id,
           quantity: item.quantity,
           unit_price,
           currency_id: "PEN",
         };
       }),
     );
-
+*/
     try {
       const preference = await PaymentService.preference.create({
         body: {
@@ -76,25 +78,30 @@ export class PaymentService {
           items: [
             {
               id: "1234",
-              title: "Nombre del producto",
-              description: "Dispositivo móvil de Tienda e-commerce",
-              picture_url:
-                "https://www.mercadopago.com/org-img/MP3/home/logomp3.gif",
-              category_id: "1234",
+              title: "Nombre del producto 1",
+              category_id: "34",
               quantity: 1,
-              currency_id: "ARS",
+              currency_id: "PEN",
               unit_price: 75.76,
+            },
+            {
+              id: "12345",
+              title: "Nombre del producto 2",
+              category_id: "12",
+              quantity: 1,
+              currency_id: "PEN",
+              unit_price: 16.48,
             },
           ],
           auto_return: "approved",
           back_urls: {
-            success: `${process.env.DEPLOY_URL}/api/payment/success`,
-            failure: `${process.env.DEPLOY_URL}/api/payment/failure`,
+            success: `${process.env.DEPLOY_URL}api/payment/success/${userId}`,
+            failure: `${process.env.DEPLOY_URL}api/payment/failure`,
           },
         },
       });
 
-      return PaymentService.preference;
+      return preference.init_point;
     } catch (error) {
       throw new Error("Error al crear la preferencia de pago");
     }

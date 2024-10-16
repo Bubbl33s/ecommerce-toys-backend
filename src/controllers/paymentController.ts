@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { PaymentService } from "../services/paymentService";
+import { OrderService } from "../services/orderService";
 
 export class PaymentController {
   static async createPaymentFromUserCart(
@@ -18,9 +19,13 @@ export class PaymentController {
     }
   }
 
-  static async paymentSuccess(_: Request, res: Response, next: NextFunction) {
+  static async paymentSuccess(req: Request, res: Response, next: NextFunction) {
     try {
-      res.json({ message: "Pago exitoso" });
+      const { id } = req.params;
+
+      await OrderService.createOrderFromUserCart(id);
+
+      res.json({ message: "Pago exitoso, orden creada" });
     } catch (error) {
       next(error);
     }
