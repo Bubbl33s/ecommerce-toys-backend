@@ -66,7 +66,7 @@ export class PaymentService {
     );
 
     try {
-      await PaymentService.preference.create({
+      const preference = await PaymentService.preference.create({
         body: {
           payment_methods: {
             excluded_payment_methods: [],
