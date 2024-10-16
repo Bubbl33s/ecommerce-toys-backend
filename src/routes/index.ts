@@ -7,6 +7,7 @@ import materialRoutes from "./materialRoutes";
 import discountRoutes from "./discountRoutes";
 import productRoutes from "./productRoutes";
 import cartRoutes from "./cartRoutes";
+import paymentRoutes from "./paymentRoutes";
 
 export default function setupRoutes(app: Application) {
   app.get("/", (_, res) => {
@@ -23,4 +24,5 @@ export default function setupRoutes(app: Application) {
   app.use(API_PREFIX, discountRoutes);
   app.use(API_PREFIX, productRoutes);
   app.use(API_PREFIX, cartRoutes);
+  app.use(API_PREFIX, paymentRoutes);
 }

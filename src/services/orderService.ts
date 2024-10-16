@@ -1,4 +1,5 @@
 import { CartService } from "./cartService";
+import { sendOrderConfirmationEmail } from "../utilities";
 import prisma from "./prisma";
 
 export class OrderService {
@@ -104,6 +105,9 @@ export class OrderService {
 
         await CartService.clearUserCart(userId);
 
+        // Send order confirmation email
+        await this.sendOrderConfirmationEmail(userId, order.id);
+
         return order;
       } catch (error) {
         throw new Error(`No se pudo crear la orden`);
@@ -122,5 +126,48 @@ export class OrderService {
       where: { id },
       data: { status },
     });
+  }
+
+  static async sendOrderConfirmationEmail(orderId: string, userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error("No se encontró al usuario");
+    }
+
+    const order = await this.getOrderById(orderId);
+
+    if (!order) {
+      throw new Error("No se encontró la orden");
+    }
+
+    let orderData: {
+      product: string;
+      quantity: number;
+      price: number;
+      totalAmount: number;
+    }[] = [];
+
+    await Promise.all(
+      order.items.map(async (item) => {
+        const product = await prisma.product.findUnique({
+          where: { id: item.productId },
+        });
+
+        if (!product) {
+          throw new Error("No se encontró el producto");
+        }
+
+        orderData.push({
+          product: product.name,
+          quantity: item.quantity,
+          price: item.lockedPrice,
+          totalAmount: item.totalAmount,
+        });
+      }),
+    ),
+      await sendOrderConfirmationEmail(user.email, orderId, orderData);
   }
 }

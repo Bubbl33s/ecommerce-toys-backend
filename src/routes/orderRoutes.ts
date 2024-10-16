@@ -25,12 +25,12 @@ router.get(
   authorizeRoles(["admin", "user"]),
   OrderController.getOrdersByUserId,
 );
-router.post(
-  "/user/:userId",
-  authenticateToken,
-  authorizeRoles(["admin", "user"]),
-  OrderController.createOrderFromUserCart,
-);
+// router.post(
+//   "/user/:userId",
+//   authenticateToken,
+//   authorizeRoles(["admin", "user"]),
+//   OrderController.createOrderFromUserCart,
+// );
 router.patch(
   "/:id",
   authenticateToken,
