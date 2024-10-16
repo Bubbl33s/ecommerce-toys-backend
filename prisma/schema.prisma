@@ -117,7 +117,7 @@ model Order {
   id            String     @id @default(uuid()) @unique
   user          User       @relation(fields: [userId], references: [id])
   userId        String
-  totalAmount   Decimal    @default(0.00)
+  totalAmount   Float    @default(0.00)
   orderDate     DateTime   @default(now())
   status        String     @default("Pending")
   items         OrderItem[]
