@@ -97,6 +97,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/user"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -398,6 +400,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         403:
           $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -729,6 +733,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/category"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -929,6 +935,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/brand"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -1129,6 +1137,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/material"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -1329,6 +1339,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/discount"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -1509,6 +1521,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/product"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -1727,6 +1741,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/image"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -2010,6 +2026,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         403:
           $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
@@ -2111,6 +2129,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         403:
           $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 
