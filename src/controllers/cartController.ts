@@ -6,6 +6,12 @@ export class CartController {
     try {
       const { id } = req.params;
       const cart = await CartService.getCartById(id);
+
+      if (!cart) {
+        res.status(404).json({ error: "Carrito no encontrado" });
+        return;
+      }
+
       res.json(cart);
     } catch (error) {
       next(error);
@@ -20,6 +26,12 @@ export class CartController {
     try {
       const { userId } = req.params;
       const cart = await CartService.getCartByUserId(userId);
+
+      if (!cart) {
+        res.status(404).json({ error: "Carrito no encontrado" });
+        return;
+      }
+
       res.json(cart);
     } catch (error) {
       next(error);
