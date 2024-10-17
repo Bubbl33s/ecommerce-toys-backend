@@ -5,6 +5,12 @@ export class ProductController {
   static async getProducts(_: Request, res: Response, next: NextFunction) {
     try {
       const products = await ProductService.getProducts();
+
+      if (!products) {
+        res.status(404).json({ error: "No hay productos" });
+        return;
+      }
+
       res.json(products);
     } catch (error) {
       next(error);
@@ -15,6 +21,12 @@ export class ProductController {
     try {
       const { id } = req.params;
       const product = await ProductService.getProductById(id);
+
+      if (!product) {
+        res.status(404).json({ error: "Producto no encontrado" });
+        return;
+      }
+
       res.json(product);
     } catch (error) {
       next(error);

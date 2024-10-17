@@ -11,6 +11,16 @@ const storageProductImg = multer.diskStorage({
   },
 });
 
+const storageCategoryImg = multer.diskStorage({
+  destination: function (_req, _file, cb) {
+    cb(null, "uploads/categoryImages/");
+  },
+  filename: function (_req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
 const storageUserImg = multer.diskStorage({
   destination: function (_req, _file, cb) {
     cb(null, "uploads/userImages/");
@@ -32,5 +42,6 @@ const storageAdminImg = multer.diskStorage({
 });
 
 export const uploadProductImage = multer({ storage: storageProductImg });
+export const uploadCategoryImage = multer({ storage: storageCategoryImg });
 export const uploadUserImage = multer({ storage: storageUserImg });
 export const uploadAdminImage = multer({ storage: storageAdminImg });

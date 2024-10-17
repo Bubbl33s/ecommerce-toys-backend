@@ -5,6 +5,12 @@ export class UserController {
   static async getUsers(_: Request, res: Response, next: NextFunction) {
     try {
       const users = await UserService.getUsers();
+
+      if (!users) {
+        res.status(404).json({ error: "No hay usuarios" });
+        return;
+      }
+
       res.json(users);
     } catch (error) {
       next(error);

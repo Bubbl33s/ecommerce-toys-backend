@@ -5,6 +5,12 @@ export class AdminController {
   static async getAdmins(_: Request, res: Response, next: NextFunction) {
     try {
       const admins = await AdminService.getAdmins();
+
+      if (!admins) {
+        res.status(404).json({ error: "No hay admins" });
+        return;
+      }
+
       res.json(admins);
     } catch (error) {
       next(error);

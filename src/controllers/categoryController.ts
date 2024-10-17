@@ -86,6 +86,43 @@ export class CategoryController {
     }
   }
 
+  static async updateCategoryImage(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { id } = req.params;
+
+    try {
+      const file = req.file;
+
+      if (!file) {
+        res.status(400).json({ error: "No se ha enviado un archivo" });
+        return;
+      }
+
+      const category = await CategoryService.updateCategoryImage(id, file.path);
+      res.json(category);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteCategoryImage(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { id } = req.params;
+
+    try {
+      const category = await CategoryService.deleteCategoryImage(id);
+      res.json(category);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async activateCategory(
     req: Request,
     res: Response,
