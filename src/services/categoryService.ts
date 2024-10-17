@@ -1,3 +1,5 @@
+import path from "path";
+import { promises as fs } from "fs";
 import prisma from "./prisma";
 
 type CategoryData = {
@@ -52,6 +54,51 @@ export class CategoryService {
       where: { id },
       data: { name, description },
     });
+  }
+
+  static async updateCategoryImage(id: string, image: string) {
+    const categoryExists = await this.getCategoryById(id);
+
+    if (!categoryExists) {
+      throw new Error("No existe una categoría con ese ID");
+    }
+
+    await this.deleteCategoryImage(id);
+
+    return prisma.category.update({
+      where: { id },
+      data: { image },
+    });
+  }
+
+  static async deleteCategoryImage(id: string) {
+    const categoryExists = await this.getCategoryById(id);
+
+    if (!categoryExists) {
+      throw new Error("No existe una categoría con ese ID");
+    }
+
+    if (categoryExists.image) {
+      const oldImagePath = path.join(
+        __dirname,
+        "../uploads/categoryImages",
+        categoryExists.image,
+      );
+
+      try {
+        await fs.access(oldImagePath);
+        await fs.unlink(oldImagePath);
+
+        return prisma.category.update({
+          where: { id },
+          data: { image: null },
+        });
+      } catch (error) {
+        throw new Error("No se pudo eliminar la imagen de la categoría");
+      }
+    }
+
+    return categoryExists;
   }
 
   static async activateCategory(id: string) {
