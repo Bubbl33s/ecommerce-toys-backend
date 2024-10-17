@@ -4,6 +4,7 @@ import { authenticateToken } from "../middlewares/authMiddleware";
 import { entityNameValidator } from "../validators";
 import validate from "../middlewares/validate";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
+import { uploadCategoryImage } from "../middlewares/multerConfig";
 
 const router = Router();
 const PREFIX = "/categories";
@@ -26,6 +27,19 @@ router.put(
   entityNameValidator,
   validate,
   CategoryController.updateCategory,
+);
+router.patch(
+  `${PREFIX}/:id/image`,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  uploadCategoryImage.single("image"),
+  CategoryController.updateCategoryImage,
+);
+router.patch(
+  `${PREFIX}/:id/delete-image`,
+  authenticateToken,
+  authorizeRoles(["admin"]),
+  CategoryController.deleteCategoryImage,
 );
 router.patch(
   `${PREFIX}/:id/activate`,
