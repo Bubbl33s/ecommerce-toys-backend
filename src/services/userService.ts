@@ -166,11 +166,9 @@ export class UserService {
     }
 
     if (userExists.profileImage) {
-      const oldImagePath = path.join(
-        __dirname,
-        "../uploads/userImages",
-        userExists.profileImage,
-      );
+      const oldImagePath = path.join(__dirname, "/", userExists.profileImage);
+
+      console.log(oldImagePath);
 
       try {
         // Verificar si el archivo existe
@@ -185,7 +183,7 @@ export class UserService {
           },
         });
       } catch (err) {
-        throw new Error("No se pudo eliminar la imagen anterior");
+        console.log("No se pudo eliminar la imagen anterior");
       }
     }
 

@@ -22,7 +22,7 @@ const options = {
 
 const specs = swaggerJSDoc(options);
 
-export const swaggerDocs = (app: Application, port: number) => {
+export const swaggerDocs = (app: Application, port: string | number) => {
   app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   app.get("/api/docs.json", (_, res: Response) => {
     res.setHeader("Content-Type", "application/json");
