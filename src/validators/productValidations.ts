@@ -10,7 +10,7 @@ export const productValidator = [
     .withMessage("El nombre debe tener entre 3 y 50 caracteres"),
 
   body("description")
-    .optional()
+    .optional({ nullable: true })
     .isString()
     .withMessage("La descripción debe ser válida")
     .isLength({ max: 255 })
@@ -47,12 +47,12 @@ export const productValidator = [
     .withMessage("La marca debe ser válida"),
 
   body("materialId")
-    .optional()
+    .optional({ nullable: true })
     .isString()
     .withMessage("El material debe ser válido"),
 
   body("discountId")
-    .optional()
+    .optional({ nullable: true })
     .isString()
     .withMessage("El descuento debe ser válido"),
 ];
