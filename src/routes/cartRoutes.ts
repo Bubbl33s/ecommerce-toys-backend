@@ -11,7 +11,7 @@ const PREFIX = "/carts";
 router.get(`${PREFIX}/:id`, CartController.getCartById);
 router.get(`${PREFIX}/user/:userId`, CartController.getCartByUserId);
 router.post(
-  `${PREFIX}/item`,
+  `${PREFIX}/:id/item`,
   authenticateToken,
   authorizeRoles(["admin", "user"]),
   addItemCartValidator,
