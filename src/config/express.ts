@@ -8,7 +8,7 @@ export default function setupExpress(app: Application) {
   const corsOptions = {
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["Authorization", "Content-Type"],
   };
 
   app.use(cors(corsOptions));
