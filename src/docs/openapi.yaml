@@ -1936,13 +1936,20 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
 
-  /carts/item:
+  /carts/{id}/item:
     post:
       tags:
         - Carts
       summary: Agregar un producto al carrito
       security:
         - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            $ref: "#/components/bases/id"
       requestBody:
         required: true
         content:
@@ -1956,8 +1963,8 @@ paths:
                   type: number
                   example: 2
       responses:
-        201:
-          description: Creado
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -1968,6 +1975,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         403:
           $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
         500:
           $ref: "#/components/responses/InternalServerError"
 

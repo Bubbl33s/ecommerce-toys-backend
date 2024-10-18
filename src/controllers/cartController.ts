@@ -40,10 +40,12 @@ export class CartController {
 
   static async addCartItem(req: Request, res: Response, next: NextFunction) {
     try {
-      const { cartId, productId, quantity } = req.body;
+      const { id } = req.params;
+
+      const { productId, quantity } = req.body;
 
       const cartItem = await CartService.addCartItem({
-        cartId,
+        cartId: id,
         productId,
         quantity,
       });
