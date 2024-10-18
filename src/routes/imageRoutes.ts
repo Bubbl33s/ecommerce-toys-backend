@@ -14,7 +14,7 @@ router.get(
   ImageController.getImagesByProductId,
 );
 router.post(
-  PREFIX,
+  `${PREFIX}/product/:productId`,
   authenticateToken,
   authorizeRoles(["admin"]),
   uploadProductImage.single("image"),
@@ -26,3 +26,5 @@ router.delete(
   authorizeRoles(["admin"]),
   ImageController.deleteImage,
 );
+
+export default router;
