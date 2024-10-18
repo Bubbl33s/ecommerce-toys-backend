@@ -55,7 +55,7 @@ export class ImageController {
 
   static async createImage(req: Request, res: Response, next: NextFunction) {
     try {
-      const { productId } = req.body;
+      const { productId } = req.params;
       const file = req.file;
 
       if (!file) {
