@@ -141,11 +141,7 @@ export class AdminService {
     }
 
     if (adminExists.profileImage) {
-      const oldImagePath = path.join(
-        __dirname,
-        "../uploads/adminImages",
-        adminExists.profileImage,
-      );
+      const oldImagePath = path.join(__dirname, "/", adminExists.profileImage);
 
       try {
         // Verificar si el archivo existe
@@ -160,7 +156,7 @@ export class AdminService {
           },
         });
       } catch (err) {
-        throw new Error("No se pudo eliminar la imagen anterior");
+        console.log("No se pudo eliminar la imagen anterior");
       }
     }
 
