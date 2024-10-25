@@ -79,11 +79,7 @@ export class CategoryService {
     }
 
     if (categoryExists.image) {
-      const oldImagePath = path.join(
-        __dirname,
-        "../uploads/categoryImages",
-        categoryExists.image,
-      );
+      const oldImagePath = path.join(__dirname, "/", categoryExists.image);
 
       try {
         await fs.access(oldImagePath);
@@ -94,7 +90,7 @@ export class CategoryService {
           data: { image: null },
         });
       } catch (error) {
-        throw new Error("No se pudo eliminar la imagen de la categoría");
+        console.log("No se pudo eliminar la imagen de la categoría");
       }
     }
 

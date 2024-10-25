@@ -168,8 +168,6 @@ export class UserService {
     if (userExists.profileImage) {
       const oldImagePath = path.join(__dirname, "/", userExists.profileImage);
 
-      console.log(oldImagePath);
-
       try {
         // Verificar si el archivo existe
         await fs.access(oldImagePath);
