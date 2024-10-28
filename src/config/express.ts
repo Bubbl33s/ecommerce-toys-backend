@@ -14,7 +14,11 @@ export default function setupExpress(app: Application) {
   app.use(cors(corsOptions));
   app.use(express.json());
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: false,
+    }),
+  );
   app.use(compression());
   app.use(morgan("dev"));
 }

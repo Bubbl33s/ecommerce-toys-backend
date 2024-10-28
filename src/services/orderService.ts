@@ -95,6 +95,11 @@ export class OrderService {
             });
 
             totalOrderAmount += lockedPrice * item.quantity;
+
+            await prismaTx.product.update({
+              where: { id: product.id },
+              data: { stock: product.stock - item.quantity },
+            });
           }),
         );
 
