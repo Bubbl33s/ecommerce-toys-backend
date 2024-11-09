@@ -9,6 +9,7 @@ import productRoutes from "./productRoutes";
 import imageRoutes from "./imageRoutes";
 import cartRoutes from "./cartRoutes";
 import paymentRoutes from "./paymentRoutes";
+import orderRoutes from "./orderRoutes";
 
 export default function setupRoutes(app: Application) {
   app.get("/", (_, res) => {
@@ -27,4 +28,5 @@ export default function setupRoutes(app: Application) {
   app.use(API_PREFIX, imageRoutes);
   app.use(API_PREFIX, cartRoutes);
   app.use(API_PREFIX, paymentRoutes);
+  app.use(API_PREFIX, orderRoutes);
 }
