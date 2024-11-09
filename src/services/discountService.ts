@@ -50,7 +50,7 @@ export class DiscountService {
 
     return prisma.discount.update({
       where: { id },
-      data: { isDeleted: true },
+      data: { isDeleted: false },
     });
   }
 
@@ -68,7 +68,7 @@ export class DiscountService {
 
     return prisma.discount.update({
       where: { id },
-      data: { isDeleted: false },
+      data: { isDeleted: true },
     });
   }
 
