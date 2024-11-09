@@ -2068,7 +2068,7 @@ paths:
       tags:
         - Orders
       summary: Obtener todas las órdenes
-      sewcurity:
+      security:
         - bearerAuth: []
       responses:
         200:
