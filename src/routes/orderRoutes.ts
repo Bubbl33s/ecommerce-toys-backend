@@ -6,21 +6,22 @@ import { authenticateToken } from "../middlewares/authMiddleware";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
 
 const router = Router();
+const PREFIX = "/orders";
 
 router.get(
-  "/",
+  PREFIX,
   authenticateToken,
-  authorizeRoles(["admin"]),
+  authorizeRoles(["admin", "user"]),
   OrderController.getOrders,
 );
 router.get(
-  "/:id",
+  `${PREFIX}/:id`,
   authenticateToken,
   authorizeRoles(["admin", "user"]),
   OrderController.getOrderById,
 );
 router.get(
-  "/user/:userId",
+  `${PREFIX}/user/:userId`,
   authenticateToken,
   authorizeRoles(["admin", "user"]),
   OrderController.getOrdersByUserId,
@@ -32,7 +33,7 @@ router.get(
 //   OrderController.createOrderFromUserCart,
 // );
 router.patch(
-  "/:id",
+  `${PREFIX}/:id/status`,
   authenticateToken,
   authorizeRoles(["admin"]),
   orderStatusValidator,
