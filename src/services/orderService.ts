@@ -44,9 +44,9 @@ export class OrderService {
       throw new Error("El carrito está vacío");
     }
 
-    return prisma.$transaction(async (prismaTx) => {
-      try {
-        const order = await prismaTx.order.create({
+    try {
+      const order = await prisma.$transaction(async (prismaTx) => {
+        const newOrder = await prismaTx.order.create({
           data: {
             userId: userId,
             status: "Pendiente",
@@ -64,29 +64,28 @@ export class OrderService {
               where: { id: item.productId },
             });
 
-            let discountValue = 0;
-
             if (!product) {
               throw new Error("No se encontró el producto");
-            } else {
-              if (product.discountId) {
-                const discount = await prismaTx.discount.findUnique({
-                  where: { id: product.discountId },
-                });
+            }
 
-                if (!discount) {
-                  throw new Error("No se encontró el descuento");
-                }
+            let discountValue = 0;
+            if (product.discountId) {
+              const discount = await prismaTx.discount.findUnique({
+                where: { id: product.discountId },
+              });
 
-                discountValue = discount.discount;
+              if (!discount) {
+                throw new Error("No se encontró el descuento");
               }
+
+              discountValue = discount.discount;
             }
 
             const lockedPrice = product.price * (1 - discountValue);
 
             await prismaTx.orderItem.create({
               data: {
-                orderId: order.id,
+                orderId: newOrder.id,
                 productId: product.id,
                 quantity: item.quantity,
                 lockedPrice,
@@ -96,6 +95,7 @@ export class OrderService {
 
             totalOrderAmount += lockedPrice * item.quantity;
 
+            // Update product stock
             await prismaTx.product.update({
               where: { id: product.id },
               data: { stock: product.stock - item.quantity },
@@ -103,21 +103,29 @@ export class OrderService {
           }),
         );
 
+        // Update order total amount
         await prismaTx.order.update({
-          where: { id: order.id },
+          where: { id: newOrder.id },
           data: { totalAmount: totalOrderAmount },
         });
 
+        // Clear user cart
         await CartService.clearUserCart(userId);
 
-        // Send order confirmation email
-        await this.sendOrderConfirmationEmail(userId, order.id);
+        return newOrder;
+      });
 
-        return order;
-      } catch (error) {
-        throw new Error(`No se pudo crear la orden`);
+      // Send order confirmation email
+      await this.sendOrderConfirmationEmail(userId, order.id);
+
+      return order;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`No se pudo crear la orden: ${error.message}`);
+      } else {
+        throw new Error("No se pudo crear la orden");
       }
-    });
+    }
   }
 
   static async updateOrderStatus(id: string, status: string) {

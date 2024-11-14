@@ -2,6 +2,7 @@ import { MercadoPagoConfig, Preference } from "mercadopago";
 import { CartService } from "./cartService";
 import prisma from "./prisma";
 import axios from "axios";
+import { OrderService } from "./orderService";
 
 export class PaymentService {
   private static API_KEY = process.env.MERCADOPAGO_API_KEY;
@@ -99,6 +100,8 @@ export class PaymentService {
   static async handleWebhook(paymentId: string) {
     const MERCADO_PAGO_API_URL = "https://api.mercadopago.com/v1/payments";
 
+    console.log("Payment received ID", paymentId);
+
     try {
       const response = await axios.get(`${MERCADO_PAGO_API_URL}/${paymentId}`, {
         headers: {
@@ -106,11 +109,17 @@ export class PaymentService {
         },
       });
 
+      await OrderService.createOrderFromUserCart(
+        response.data.external_reference,
+      );
+
       return response.data;
     } catch (error) {
       if (error instanceof Error) {
+        console.error(error.message);
         throw new Error(error.message);
       } else {
+        console.error("An unknown error occurred");
         throw new Error("An unknown error occurred");
       }
     }
