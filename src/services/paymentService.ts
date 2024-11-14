@@ -3,6 +3,9 @@ import { CartService } from "./cartService";
 import prisma from "./prisma";
 import axios from "axios";
 import { OrderService } from "./orderService";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export class PaymentService {
   private static API_KEY = process.env.MERCADOPAGO_API_KEY;

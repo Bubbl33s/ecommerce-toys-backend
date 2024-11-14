@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { PaymentService } from "../services/paymentService";
-import { OrderService } from "../services/orderService";
 
 export class PaymentController {
   static async createPaymentFromUserCart(
