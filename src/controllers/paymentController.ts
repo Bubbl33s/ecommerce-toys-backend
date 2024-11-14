@@ -21,6 +21,9 @@ export class PaymentController {
 
   static async handleWebhook(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("Payment received");
+      console.log("req query", req.query);
+
       const paymentId = req.query["data.id"] as string;
 
       if (!paymentId) {
@@ -28,15 +31,11 @@ export class PaymentController {
         return;
       }
 
-      const payment = await PaymentService.handleWebhook(paymentId);
+      await PaymentService.handleWebhook(paymentId);
 
-      // Si sale bien se obtiene el userId y se crea la orden
-      const userId = payment.external_reference;
-
-      await OrderService.createOrderFromUserCart(userId);
-
-      res.json({ message: "Orden creada" });
+      res.json({ message: "Orden recibida" });
     } catch (error) {
+      console.error("Error handling webhook", error);
       next(error);
     }
   }
