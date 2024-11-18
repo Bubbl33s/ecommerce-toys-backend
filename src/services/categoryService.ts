@@ -1,6 +1,8 @@
 import path from "path";
 import { promises as fs } from "fs";
 import prisma from "./prisma";
+import cloudinary from "../config/cloudinary";
+import express from "express";
 
 type CategoryData = {
   name: string;
@@ -56,18 +58,34 @@ export class CategoryService {
     });
   }
 
-  static async updateCategoryImage(id: string, image: string) {
+  static async updateCategoryImage(
+    id: string,
+    fileBuffer: Express.Multer.File["buffer"],
+  ) {
     const categoryExists = await this.getCategoryById(id);
 
     if (!categoryExists) {
       throw new Error("No existe una categoría con ese ID");
     }
 
+    const uploadStream = cloudinary.uploader.upload_stream;
+
+    const result: any = await new Promise((resolve, reject) => {
+      const stream = uploadStream(
+        { folder: `toy-estore/categories/${id}` },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        },
+      );
+      stream.end(fileBuffer);
+    });
+
     await this.deleteCategoryImage(id);
 
     return prisma.category.update({
       where: { id },
-      data: { image },
+      data: { image: result.secure_url },
     });
   }
 
@@ -79,19 +97,7 @@ export class CategoryService {
     }
 
     if (categoryExists.image) {
-      const oldImagePath = path.join(__dirname, "/", categoryExists.image);
-
-      try {
-        await fs.access(oldImagePath);
-        await fs.unlink(oldImagePath);
-
-        return prisma.category.update({
-          where: { id },
-          data: { image: null },
-        });
-      } catch (error) {
-        console.log("No se pudo eliminar la imagen de la categoría");
-      }
+      await cloudinary.uploader.destroy(categoryExists.image);
     }
 
     return categoryExists;

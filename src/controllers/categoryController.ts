@@ -101,7 +101,11 @@ export class CategoryController {
         return;
       }
 
-      const category = await CategoryService.updateCategoryImage(id, file.path);
+      const category = await CategoryService.updateCategoryImage(
+        id,
+        file.buffer,
+      );
+
       res.json(category);
     } catch (error) {
       next(error);
@@ -117,6 +121,7 @@ export class CategoryController {
 
     try {
       const category = await CategoryService.deleteCategoryImage(id);
+
       res.json(category);
     } catch (error) {
       next(error);
