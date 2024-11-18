@@ -13,7 +13,7 @@ import {
 } from "../validators/adminValidations";
 import validate from "../middlewares/validate";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
-import { uploadAdminImage } from "../middlewares/multerConfig";
+import { upload } from "../middlewares/uploadMiddleware";
 
 const router = Router();
 const PREFIX = "/admins";
@@ -74,7 +74,7 @@ router.patch(
   `${PREFIX}/:id/image`,
   authenticateToken,
   authorizeRoles(["admin"]),
-  uploadAdminImage.single("image"),
+  upload.single("image"),
   AdminController.updateAdminImage,
 );
 router.patch(
