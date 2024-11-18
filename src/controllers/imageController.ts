@@ -63,7 +63,7 @@ export class ImageController {
       }
 
       const image = await ImageService.createImage({
-        url: file.path,
+        fileBuffer: file.buffer,
         productId,
       });
 
@@ -77,6 +77,7 @@ export class ImageController {
     try {
       const { id } = req.params;
       await ImageService.deleteImage(id);
+
       res.json({ message: "Imagen eliminada" });
     } catch (error) {
       next(error);
