@@ -3,6 +3,7 @@ import {
   hashPassword,
   generateVerificationToken,
   sendAccountConfirmationEmail,
+  extractPublicId,
 } from "../utilities";
 import cloudinary from "../config/cloudinary";
 
@@ -168,7 +169,7 @@ export class UserService {
     return prisma.user.update({
       where: { id },
       data: {
-        profileImage: result.public_id,
+        profileImage: result.secure_url,
       },
     });
   }
@@ -181,7 +182,9 @@ export class UserService {
     }
 
     if (userExists.profileImage) {
-      await cloudinary.uploader.destroy(userExists.profileImage);
+      await cloudinary.uploader.destroy(
+        extractPublicId(userExists.profileImage),
+      );
     }
 
     return userExists;

@@ -1,5 +1,6 @@
 import prisma from "./prisma";
 import cloudinary from "../config/cloudinary";
+import { extractPublicId } from "../utilities";
 
 type CategoryData = {
   name: string;
@@ -94,7 +95,7 @@ export class CategoryService {
     }
 
     if (categoryExists.image) {
-      await cloudinary.uploader.destroy(categoryExists.image);
+      await cloudinary.uploader.destroy(extractPublicId(categoryExists.image));
     }
 
     return categoryExists;

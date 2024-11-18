@@ -4,6 +4,7 @@ import {
   sendAccountConfirmationEmail,
   sendOrderConfirmationEmail,
 } from "./emailClient";
+import { extractPublicId } from "./extractPublicId";
 
 export {
   hashPassword,
@@ -11,4 +12,5 @@ export {
   generateVerificationToken,
   sendAccountConfirmationEmail,
   sendOrderConfirmationEmail,
+  extractPublicId,
 };

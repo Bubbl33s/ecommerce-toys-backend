@@ -1,6 +1,7 @@
 import prisma from "./prisma";
 import { ProductService } from "./productService";
 import cloudinary from "../config/cloudinary";
+import { extractPublicId } from "../utilities";
 
 type ImageData = {
   fileBuffer: Express.Multer.File["buffer"];
@@ -61,7 +62,7 @@ export class ImageService {
       throw new Error("No existe una imagen con ese ID");
     }
 
-    await cloudinary.uploader.destroy(imageExists.url);
+    await cloudinary.uploader.destroy(extractPublicId(imageExists.url));
 
     return prisma.image.delete({ where: { id } });
   }
