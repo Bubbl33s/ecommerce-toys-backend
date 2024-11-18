@@ -1,8 +1,5 @@
-import path from "path";
-import { promises as fs } from "fs";
 import prisma from "./prisma";
 import cloudinary from "../config/cloudinary";
-import express from "express";
 
 type CategoryData = {
   name: string;

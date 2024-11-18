@@ -110,7 +110,8 @@ export class UserController {
         return;
       }
 
-      const user = await UserService.updateUserImage(id, file.path);
+      const user = await UserService.updateUserImage(id, file.buffer);
+
       res.json(user);
     } catch (error) {
       next(error);
