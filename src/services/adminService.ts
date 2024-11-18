@@ -1,7 +1,6 @@
 import prisma from "./prisma";
-import { hashPassword } from "../utilities";
-import path from "path";
-import { promises as fs } from "fs";
+import { extractPublicId, hashPassword } from "../utilities";
+import cloudinary from "../config/cloudinary";
 
 type UpdateAdminData = {
   fullName: string;
@@ -115,7 +114,10 @@ export class AdminService {
     });
   }
 
-  static async updateAdminImage(id: string, profileImage: string) {
+  static async updateAdminImage(
+    id: string,
+    fileBuffer: Express.Multer.File["buffer"],
+  ) {
     const adminExists = await this.getAdminById(id);
 
     if (!adminExists) {
@@ -125,10 +127,23 @@ export class AdminService {
     // Si el administrador ya tiene una imagen de perfil, eliminarla del servidor
     await this.deleteAdminImage(id);
 
+    const uploadStream = cloudinary.uploader.upload_stream;
+
+    const result: any = await new Promise((resolve, reject) => {
+      const stream = uploadStream(
+        { folder: `toy-estore/admins/${id}` },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        },
+      );
+      stream.end(fileBuffer);
+    });
+
     return prisma.admin.update({
       where: { id },
       data: {
-        profileImage,
+        profileImage: result.secure_url,
       },
     });
   }
@@ -141,23 +156,9 @@ export class AdminService {
     }
 
     if (adminExists.profileImage) {
-      const oldImagePath = path.join(__dirname, "/", adminExists.profileImage);
-
-      try {
-        // Verificar si el archivo existe
-        await fs.access(oldImagePath);
-        // Eliminar el archivo
-        await fs.unlink(oldImagePath);
-
-        return prisma.admin.update({
-          where: { id },
-          data: {
-            profileImage: null,
-          },
-        });
-      } catch (err) {
-        console.log("No se pudo eliminar la imagen anterior");
-      }
+      await cloudinary.uploader.destroy(
+        extractPublicId(adminExists.profileImage),
+      );
     }
 
     return adminExists;

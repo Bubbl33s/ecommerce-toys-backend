@@ -3,9 +3,9 @@ import {
   hashPassword,
   generateVerificationToken,
   sendAccountConfirmationEmail,
+  extractPublicId,
 } from "../utilities";
-import path from "path";
-import { promises as fs } from "fs";
+import cloudinary from "../config/cloudinary";
 
 type CreateUserData = {
   fullName: string;
@@ -140,7 +140,10 @@ export class UserService {
     });
   }
 
-  static async updateUserImage(id: string, profileImage: string) {
+  static async updateUserImage(
+    id: string,
+    fileBuffer: Express.Multer.File["buffer"],
+  ) {
     const userExists = await this.getUserById(id);
 
     if (!userExists) {
@@ -150,10 +153,23 @@ export class UserService {
     // Si el usuario ya tiene una imagen de perfil, eliminarla del servidor
     await this.deleteUserImage(id);
 
+    const uploadStream = cloudinary.uploader.upload_stream;
+
+    const result: any = await new Promise((resolve, reject) => {
+      const stream = uploadStream(
+        { folder: `toy-estore/users/${id}` },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        },
+      );
+      stream.end(fileBuffer);
+    });
+
     return prisma.user.update({
       where: { id },
       data: {
-        profileImage,
+        profileImage: result.secure_url,
       },
     });
   }
@@ -166,23 +182,9 @@ export class UserService {
     }
 
     if (userExists.profileImage) {
-      const oldImagePath = path.join(__dirname, "/", userExists.profileImage);
-
-      try {
-        // Verificar si el archivo existe
-        await fs.access(oldImagePath);
-        // Eliminar el archivo
-        await fs.unlink(oldImagePath);
-
-        return prisma.user.update({
-          where: { id },
-          data: {
-            profileImage: null,
-          },
-        });
-      } catch (err) {
-        console.log("No se pudo eliminar la imagen anterior");
-      }
+      await cloudinary.uploader.destroy(
+        extractPublicId(userExists.profileImage),
+      );
     }
 
     return userExists;
