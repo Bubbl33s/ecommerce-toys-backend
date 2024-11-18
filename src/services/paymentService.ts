@@ -83,7 +83,7 @@ export class PaymentService {
           auto_return: "approved",
           back_urls: {
             // Cambiar con la url de deploy del frontend
-            success: `${process.env.DEPLOY_URL}api/payment/success/`,
+            success: "https://e-commerce-toy-store.vercel.app/paymentsuccess",
             // failure: `${process.env.DEPLOY_URL}api/payment/failure`,
           },
           payer: {
