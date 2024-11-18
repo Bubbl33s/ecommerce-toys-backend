@@ -121,7 +121,8 @@ export class AdminController {
       if (!file) {
         throw new Error("No se ha enviado un archivo");
       }
-      const admin = await AdminService.updateAdminImage(id, file?.path);
+      const admin = await AdminService.updateAdminImage(id, file.buffer);
+
       res.json(admin);
     } catch (error) {
       next(error);
@@ -137,6 +138,7 @@ export class AdminController {
 
     try {
       await AdminService.deleteAdminImage(id);
+
       res.json({ message: "Imagen eliminada" });
     } catch (error) {
       next(error);

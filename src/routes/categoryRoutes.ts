@@ -4,7 +4,7 @@ import { authenticateToken } from "../middlewares/authMiddleware";
 import { entityNameValidator } from "../validators";
 import validate from "../middlewares/validate";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
-import { uploadCategoryImage } from "../middlewares/multerConfig";
+import { upload } from "../middlewares/uploadMiddleware";
 
 const router = Router();
 const PREFIX = "/categories";
@@ -32,7 +32,7 @@ router.patch(
   `${PREFIX}/:id/image`,
   authenticateToken,
   authorizeRoles(["admin"]),
-  uploadCategoryImage.single("image"),
+  upload.single("image"),
   CategoryController.updateCategoryImage,
 );
 router.patch(

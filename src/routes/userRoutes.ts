@@ -10,7 +10,7 @@ import {
 } from "../validators";
 import validate from "../middlewares/validate";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
-import { uploadUserImage } from "../middlewares/multerConfig";
+import { upload } from "../middlewares/uploadMiddleware";
 
 const router = Router();
 const PREFIX = "/users";
@@ -47,7 +47,7 @@ router.patch(
   `${PREFIX}/:id/image`,
   authenticateToken,
   authorizeRoles(["admin", "user"]),
-  uploadUserImage.single("image"),
+  upload.single("image"),
   UserController.updateUserImage,
 );
 router.patch(

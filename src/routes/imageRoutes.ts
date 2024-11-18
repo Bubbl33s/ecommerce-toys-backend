@@ -2,7 +2,7 @@ import { Router } from "express";
 import { ImageController } from "../controllers/imageController";
 import { authenticateToken } from "../middlewares/authMiddleware";
 import { authorizeRoles } from "../middlewares/rolesMiddleware";
-import { uploadProductImage } from "../middlewares/multerConfig";
+import { upload } from "../middlewares/uploadMiddleware";
 
 const router = Router();
 const PREFIX = "/images";
@@ -17,7 +17,7 @@ router.post(
   `${PREFIX}/product/:productId`,
   authenticateToken,
   authorizeRoles(["admin"]),
-  uploadProductImage.single("image"),
+  upload.single("image"),
   ImageController.createImage,
 );
 router.delete(
